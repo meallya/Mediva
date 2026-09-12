@@ -37,4 +37,12 @@ class Unit extends Model
             'doctor_unit'
         )->withTimestamps();
     }
+
+
+    public function rooms(): HasMany
+    {
+        return $this->hasMany(
+            Room::class
+        );
+    }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\PaymentMethodController;
 use App\Http\Controllers\Api\QueueController;
 use App\Http\Controllers\Api\RegistrationController;
+use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\MedicalCodingController;
 use App\Http\Controllers\Api\MedicalRecordController;
 use App\Http\Controllers\Api\MedicineController;
@@ -346,6 +347,14 @@ Route::middleware(
             ]
         );
 
+        Route::patch(
+            '/master/employees/{employee}/status',
+            [
+                EmployeeController::class,
+                'toggleStatus',
+            ]
+        );
+
         /*
         |--------------------------------------------------------------------------
         | DOCTOR MASTER
@@ -395,6 +404,14 @@ Route::middleware(
             ]
         );
 
+        Route::patch(
+            '/master/doctors/{doctor}/status',
+            [
+                DoctorController::class,
+                'toggleStatus',
+            ]
+        );
+
         /*
         |--------------------------------------------------------------------------
         | CLINIC / POLI
@@ -433,6 +450,73 @@ Route::middleware(
             ]
         );
 
+
+        Route::patch(
+            '/master/clinics/{clinic}/status',
+            [
+                ClinicController::class,
+                'toggleStatus',
+            ]
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | ROOM
+        |--------------------------------------------------------------------------
+        |
+        | OPTIONS HARUS sebelum {room}.
+        |
+        */
+
+        Route::get(
+            '/master/rooms/options',
+            [
+                RoomController::class,
+                'options',
+            ]
+        );
+
+        Route::get(
+            '/master/rooms',
+            [
+                RoomController::class,
+                'index',
+            ]
+        );
+
+        Route::post(
+            '/master/rooms',
+            [
+                RoomController::class,
+                'store',
+            ]
+        );
+
+        Route::get(
+            '/master/rooms/{room}',
+            [
+                RoomController::class,
+                'show',
+            ]
+        );
+
+        Route::put(
+            '/master/rooms/{room}',
+            [
+                RoomController::class,
+                'update',
+            ]
+        );
+
+        Route::patch(
+            '/master/rooms/{room}/status',
+            [
+                RoomController::class,
+                'toggleStatus',
+            ]
+        );
+
+
         /*
         |--------------------------------------------------------------------------
         | PAYMENT METHOD
@@ -468,6 +552,14 @@ Route::middleware(
             [
                 PaymentMethodController::class,
                 'update',
+            ]
+        );
+
+        Route::patch(
+            '/master/payment-methods/{paymentMethod}/status',
+            [
+                PaymentMethodController::class,
+                'toggleStatus',
             ]
         );
 

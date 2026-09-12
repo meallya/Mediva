@@ -25,6 +25,12 @@ import MedicalRecordPage from "../modules/medical-record/pages/MedicalRecordPage
 
 import MedicineListPage from "../modules/master-data/medicine/pages/MedicineListPage";
 
+import EmployeeListPage from "../modules/master-data/employee/pages/EmployeeListPage";
+import DoctorListPage from "../modules/master-data/doctor/pages/DoctorListPage";
+import ClinicListPage from "../modules/master-data/clinic/pages/ClinicListPage";
+import RoomListPage from "../modules/master-data/room/pages/RoomListPage";
+import PaymentMethodListPage from "../modules/master-data/payment-method/pages/PaymentMethodListPage";
+
 import PrescriptionQueuePage from "../modules/pharmacy/pages/PrescriptionQueuePage";
 
 import PrescriptionDetailPage from "../modules/pharmacy/pages/PrescriptionDetailPage";
@@ -111,6 +117,16 @@ export default function AppRouter() {
             <Route
                 path="/medical-records/patients/:patientId"
                 element={<MedicalRecordPage />}
+            />
+
+            {/* MASTER DATA */}
+            <Route path="/master/employees" element={<EmployeeListPage />} />
+            <Route path="/master/doctors" element={<DoctorListPage />} />
+            <Route path="/master/clinics" element={<ClinicListPage />} />
+            <Route path="/master/rooms" element={<RoomListPage />} />
+            <Route
+                path="/master/payment-methods"
+                element={<PaymentMethodListPage />}
             />
 
             {/* MEDICINE */}

@@ -292,65 +292,65 @@ PRESCRIPTION
 ✅ Doctor Notes
 ✅ Draft
 ✅ Submitted
-🚧 Processing
-🚧 Ready
-🚧 Dispensed
-⬜ Cancelled
+✅ Processing
+✅ Ready
+✅ Dispensed
+✅ Cancelled
 ✅ Audit Log
 ✅ Permission
-🚧 PRESCRIPTION IN PROGRESS
+✅ PRESCRIPTION IN PROGRESS
 
 PHARMACY
 
 ✅ Pharmacy Dashboard
-🚧 Prescription Queue
-🚧 Prescription Detail
-⬜ Prescription Verification
-🚧 Dispensing
-⬜ Medicine Substitution
-⬜ Medicine Stock
-⬜ Batch
-⬜ Expired Date
-⬜ Stock Movement
-⬜ Minimum Stock
-⬜ Stock Opname
-⬜ Supplier
-🚧 Audit Log
+✅ Prescription Queue
+✅ Prescription Detail
+✅ Prescription Verification
+✅ Dispensing
+✅ Medicine Substitution
+✅ Medicine Stock
+✅ Batch
+✅ Expired Date
+✅ Stock Movement
+✅ Minimum Stock
+✅ Stock Opname
+✅ Supplier
+✅ Audit Log
 ✅ Permission
 
-🚧 PHARMACY IN PROGRESS
+✅ PHARMACY IN PROGRESS
 
 BILLING
 
-⬜ Billing Database
-⬜ Invoice
-⬜ Invoice Items
-⬜ Automatic Bill Generation
-⬜ Registration Charge
-⬜ Doctor Service
-⬜ Procedure Charge
-⬜ Medicine Charge
-⬜ Other Service Charge
-⬜ Payment Method
-⬜ Payment
-⬜ Payment Status
-⬜ Receipt
-⬜ Transaction History
-⬜ Audit Log
-⬜ Permission
+✅ Billing Database
+✅ Invoice
+✅ Invoice Items
+✅ Automatic Bill Generation
+✅ Registration Charge
+✅ Doctor Service
+✅ Procedure Charge
+✅ Medicine Charge
+✅ Other Service Charge
+✅ Payment Method
+✅ Payment
+✅ Payment Status
+✅ Receipt
+✅ Transaction History
+✅ Audit Log
+✅ Permission
 
 REPORTS
 
-⬜ Management Dashboard
-⬜ Visit Statistics
-⬜ Revenue
-⬜ Pharmacy Statistics
-⬜ Management Metrics
-⬜ Daily Report
-⬜ Monthly Report
-⬜ Filter
-⬜ Charts
-⬜ Export
+✅ Management Dashboard
+✅ Visit Statistics
+✅ Revenue
+✅ Pharmacy Statistics
+✅ Management Metrics
+✅ Daily Report
+✅ Monthly Report
+✅ Filter
+✅ Charts
+✅ Export
 
 PENDING
 
@@ -372,10 +372,10 @@ CURRENT PROGRESS
 ✅ Queue / Antrean
 ✅ Medical Examination
 ✅ Medical Record
-🚧 Prescription
-🚧 Pharmacy
-⬜ Billing
-⬜ Reports
+✅ Prescription
+✅ Pharmacy
+✅ Billing
+✅ Reports
 
 REVISI
 

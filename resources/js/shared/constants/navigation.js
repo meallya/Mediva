@@ -200,7 +200,7 @@ const navigation = [
 
         icon: faDatabase,
 
-        permissions: ["user.manage", "medicine.view", "tariff_view"],
+        permissions: ["user.manage", "medicine.view", "tariff.view"],
 
         children: [
             /*
@@ -218,7 +218,7 @@ const navigation = [
 
                 permissions: ["user.manage"],
 
-                available: false,
+                available: true,
             },
 
             /*
@@ -236,7 +236,7 @@ const navigation = [
 
                 permissions: ["user.manage"],
 
-                available: false,
+                available: true,
             },
 
             /*
@@ -254,7 +254,7 @@ const navigation = [
 
                 permissions: ["user.manage"],
 
-                available: false,
+                available: true,
             },
 
             /*
@@ -272,7 +272,7 @@ const navigation = [
 
                 permissions: ["user.manage"],
 
-                available: false,
+                available: true,
             },
 
             /*
@@ -340,7 +340,7 @@ const navigation = [
 
                 permissions: ["user.manage"],
 
-                available: false,
+                available: true,
             },
         ],
     },
