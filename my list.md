@@ -1,4 +1,5 @@
-CHECKLIST MEDIVA
+MEDIVA — CURRENT PROGRESS
+15 SEPTEMBER 2026
 
 FOUNDATION
 
@@ -26,53 +27,40 @@ FOUNDATION
 ✅ Loading Switch Role
 ✅ Typography
 
-🎉 FOUNDATION BASIC COMPLETE
+🎉 FOUNDATION COMPLETE
+
+ARCHITECTURE SETUP
+
+✅ clinical-medical/
+✅ operational-hospital/
+✅ corporate-office/
+✅ README domain
+✅ Struktur module-based
+✅ Domain dipisah berdasarkan business domain
+
+🎉 ARCHITECTURE SETUP COMPLETE
 
 MASTER DATA
 
 ✅ Patient
-
-🚧 Employee
-→ Database/model employee sudah dipakai Auth & Role Assignment.
-→ Master Employee CRUD UI belum dibuat.
-
-🚧 Doctor
-→ Model/profile + relationship Doctor sudah aktif.
-→ Sudah dipakai Examination.
-→ Master Doctor CRUD UI belum dibuat.
-
-🚧 Clinic / Poli
-→ Unit/Poli sudah digunakan Registration, Queue, Doctor.
-→ Prefix antrean per poli sudah ada.
-→ Master Poli CRUD UI belum selesai.
-
+✅ Employee
+✅ Doctor
+✅ Clinic / Poli
 ✅ Medicine
-✅ Database
-✅ Model
-✅ CRUD
-✅ Search
-✅ Pagination
-✅ Aktif / Nonaktif
-✅ Proteksi Delete
-✅ Medicine Permission
-✅ Farmasi Full CRUD
-✅ IT View Only
-✅ Doctor Search Only
-✅ Informasi Halal Obat
-✅ No. Sertifikat Halal
-✅ Masa Berlaku
-✅ Catatan Halal
-✅ Badge Halal
 
-⬜ Room
+✅ Room
+✅ Ruangan RS
+✅ Kamar Rawat Inap
+✅ Relasi Ruangan RS → Kamar Rawat Inap
+✅ Safe Delete
+✅ Delete ditolak jika masih digunakan
+✅ Runtime Test
 
-⬜ Tariff
+✅ Tariff
+✅ Supplier
+✅ Payment Method
 
-⬜ Supplier
-
-🚧 Payment Method
-→ Sudah terintegrasi ke flow Visit.
-→ Master Payment Method belum selesai sebagai modul.
+🎉 MASTER DATA COMPLETION COMPLETE
 
 PATIENT
 
@@ -95,11 +83,11 @@ PATIENT
 ✅ Pendaftaran Create & Edit
 ✅ Dokter View Only
 
-🎉 PATIENT BASIC MODULE COMPLETE
+🎉 PATIENT COMPLETE
 
 REGISTRATION
 
-✅ Registration Database
+✅ Database
 ✅ Migration
 ✅ Model
 ✅ Patient Relationship
@@ -116,35 +104,17 @@ REGISTRATION
 ✅ Complete Service API
 ✅ Search
 ✅ Status Filter
-✅ Registration Service
-✅ Registration List
-✅ Create Form
-✅ Search Patient
-✅ Select Patient
-✅ Select Unit
-✅ Visit Type
-✅ Complaint
-✅ Detail
-✅ Edit
-✅ Cancel Modal
-✅ Waiting → In Service
-✅ In Service → Completed
-✅ Pendaftaran menangani administrasi
-✅ Edit hanya ketika Waiting
-✅ Cancel hanya ketika Waiting
-✅ Mulai Pelayanan khusus Dokter
-✅ Selesai Pelayanan khusus Dokter
-✅ IT View Only
+✅ Frontend
 ✅ Audit
 ✅ Permission
 
-🎉 REGISTRATION ADMINISTRATION COMPLETE
+🎉 REGISTRATION COMPLETE
 
 VISIT / KUNJUNGAN
 
-✅ Visit Database
-✅ Visit Migration
-✅ Visit Model
+✅ Database
+✅ Migration
+✅ Model
 ✅ Visit Number
 ✅ Patient Relationship
 ✅ Unit Relationship
@@ -159,98 +129,60 @@ VISIT / KUNJUNGAN
 ✅ Audit Actor
 ✅ SATUSEHAT Encounter ID Preparation
 
-🎉 VISIT BASIC FLOW COMPLETE
+🎉 VISIT COMPLETE
 
 QUEUE / ANTREAN
 
-✅ Queue Database
-✅ Queue Migration
-✅ Queue Model
+✅ Database
+✅ Migration
+✅ Model
 ✅ Visit Relationship
 ✅ Unit Relationship
 ✅ Queue Number
 ✅ Service Type
 ✅ Priority
-✅ Queue Status
-✅ Taken At
-✅ Called At
-✅ Started At
-✅ Completed At
-✅ Counter / Loket
-✅ Booking Code Preparation
+✅ Status
+✅ Call Patient
+✅ Start Service
+✅ Complete Queue
+✅ Search
+✅ Filter
+✅ Frontend
 
-REGISTRATION → VISIT INTEGRATION
+🎉 QUEUE COMPLETE
 
-✅ Auto Create Visit saat Registration
+REGISTRATION → VISIT → QUEUE
+
+✅ Auto Create Visit
 ✅ Auto Generate Visit Number
 ✅ Auto Create Queue
 ✅ Auto Generate Queue Number
-✅ Registration → Visit Relationship
-✅ Visit → Queue Relationship
-✅ Visit Status Sync
-✅ Queue Status Sync
+✅ Status Sync
 ✅ Doctor Assignment
 ✅ Payment Method
 ✅ Audit Log
 
-QUEUE FRONTEND
-
-✅ Queue Service
-✅ Queue UI
-✅ Patient Queue
-✅ Search Patient
-✅ Status Filter
-✅ Unit / Poli Filter
-✅ Queue Detail
-✅ Call Patient
-✅ Start Service
-✅ Complete Queue
-
-🎉 REGISTRATION + VISIT + QUEUE COMPLETE
+🎉 FLOW COMPLETE
 
 MEDICAL EXAMINATION
 
 ✅ Doctor Dashboard
 ✅ Doctor Queue
-✅ Daftar Pasien Waiting
-✅ Daftar Pasien In Service
 ✅ Patient Detail
 ✅ Visit History
-✅ Diagnosis History
-✅ Medication History
 ✅ Examination Database
-✅ Examination Migration
-✅ Examination Model
-✅ Visit Relationship
-✅ Doctor Relationship
-✅ Validation
-✅ Medical Examination API
-✅ Examination Service
-✅ SOAP Form
-✅ Subjective
-✅ Objective
-✅ Assessment
-✅ Plan
+✅ SOAP
 ✅ Vital Signs
-✅ Blood Pressure
-✅ Heart Rate
-✅ Respiratory Rate
-✅ Temperature
-✅ Weight
-✅ Height
 ✅ Physical Examination
-✅ Diagnosis ICD-10
-✅ Primary Diagnosis
-✅ Secondary Diagnosis
-✅ ICD-10 Search
-✅ Procedure ICD-9-CM
-✅ ICD-9-CM Search
-✅ Tindakan
+✅ ICD-10
+✅ ICD-9-CM
+✅ Diagnosis
+✅ Procedure
 ✅ Doctor Notes
-✅ Save Examination
-✅ Edit Examination
-✅ Detail Examination
-✅ Complete Examination
+✅ Save
+✅ Edit
+✅ Detail
+✅ Complete
 ✅ Lock Completed Examination
 ✅ Audit Log
 ✅ Permission
@@ -259,13 +191,12 @@ MEDICAL EXAMINATION
 
 MEDICAL RECORD
 
-✅ Medical Record Database
+✅ Database
 ✅ Patient Visit History
 ✅ SOAP History
 ✅ Diagnosis History
 ✅ Procedure History
 ✅ Prescription History
-✅ Diagnosis Validation
 ✅ ICD-10 Coding
 ✅ ICD-9-CM Coding
 ✅ Coding History
@@ -275,15 +206,15 @@ MEDICAL RECORD
 ✅ Updated By
 ✅ Audit Log
 
-🎉 MEDICAL RECORD BASIC COMPLETE
+🎉 MEDICAL RECORD COMPLETE
 
 PRESCRIPTION
 
-✅ Prescription Database
+✅ Database
 ✅ Prescription Items
-✅ Prescription API
-✅ Prescription Service
-✅ Create Prescription from Examination
+✅ API
+✅ Service
+✅ Create from Examination
 ✅ Medicine Search
 ✅ Dosage
 ✅ Frequency
@@ -298,7 +229,8 @@ PRESCRIPTION
 ✅ Cancelled
 ✅ Audit Log
 ✅ Permission
-✅ PRESCRIPTION IN PROGRESS
+
+🎉 PRESCRIPTION COMPLETE
 
 PHARMACY
 
@@ -318,7 +250,7 @@ PHARMACY
 ✅ Audit Log
 ✅ Permission
 
-✅ PHARMACY IN PROGRESS
+🎉 PHARMACY COMPLETE
 
 BILLING
 
@@ -339,6 +271,8 @@ BILLING
 ✅ Audit Log
 ✅ Permission
 
+🎉 BILLING COMPLETE
+
 REPORTS
 
 ✅ Management Dashboard
@@ -352,10 +286,120 @@ REPORTS
 ✅ Charts
 ✅ Export
 
-PENDING
+🎉 REPORTS COMPLETE
 
-⏸️ Postman
-⏸️ Sanctum Testing
+GENERAL INVENTORY
+
+✅ Architecture
+✅ Migration
+✅ Backend API
+✅ Frontend
+✅ Route
+✅ Navigation
+✅ Permission
+✅ Category
+✅ Unit of Measure
+✅ Warehouse
+✅ Item Master
+✅ Current Stock
+✅ Stock Movement
+✅ Minimum Stock
+✅ Stock In
+✅ Stock Out
+✅ Unit Request
+✅ Request Approval
+✅ Distribution
+✅ Stock Opname
+✅ Supplier Integration
+✅ Unit Integration
+✅ Audit Log
+✅ Search
+✅ Filter
+✅ Pagination
+
+🚧 Runtime Testing
+
+ASSET & ALKES
+
+✅ Database / Migration
+✅ Backend API
+✅ Frontend
+✅ Navigation
+✅ Permission
+✅ Dashboard Asset
+✅ Master Asset
+✅ Kategori Asset
+✅ Asset Umum
+✅ Alat Kesehatan
+✅ Serial Number
+✅ Merk / Model
+✅ Supplier
+✅ Unit
+✅ Ruangan RS
+✅ Harga Perolehan
+✅ Tanggal Perolehan
+✅ Garansi
+✅ Kondisi
+✅ Status
+✅ Registrasi Alkes
+✅ Risk Class
+✅ Kalibrasi
+✅ Maintenance
+✅ Maintenance History
+✅ Mutasi Asset
+✅ Audit Log
+✅ UI Consistency Patch dibuat
+
+🚧 Runtime Testing
+
+PROCUREMENT / PENGADAAN
+
+✅ Database / Migration code
+✅ Backend API
+✅ Frontend
+✅ Navigation
+✅ Permission
+✅ Purchase Request
+✅ Approval
+✅ Reject
+✅ Supplier / Vendor
+✅ Quotation
+✅ Vendor Comparison
+✅ Purchase Order
+✅ Issue PO
+✅ Receiving
+✅ Inventory Integration
+✅ Asset Integration
+✅ Alkes Integration
+✅ Audit Log
+✅ UI Consistency Patch dibuat
+
+🚧 Migration Procurement
+→ sebelumnya gagal karena nama unique index terlalu panjang
+→ kode perbaikannya sudah diberikan
+
+🚧 Runtime Testing
+
+UX HARDENING
+
+⬜ Pindahkan Riwayat Medis ke Informasi Pasien
+✅ Perbesar typography seluruh clinical UI
+✅ Tingkatkan contrast teks penting
+✅ Reusable Toast Notification
+✅ Perbesar Error / Warning / Success Alert
+✅ Subtle transition / animation
+✅ Support Enter primary action
+✅ Jangan submit Enter dari textarea
+✅ Protect destructive / final actions
+✅ Optimasi loading & API response
+⬜ Skeleton loading data klinis
+✅ Pertahankan design asli MEDIVA
+✅ Pertahankan palette MEDIVA
+
+TESTING
+
+🚧 Postman
+🚧 Sanctum Testing
 🚧 API Testing
 🚧 Feature Testing
 🚧 Permission Testing
@@ -363,94 +407,110 @@ PENDING
 🚧 Multi-role Testing
 🚧 End-to-End Testing
 
-CURRENT PROGRESS
+EXPANSION ROADMAP
 
-✅ Foundation
-✅ Patient
-✅ Registration Administration
-✅ Visit / Kunjungan
-✅ Queue / Antrean
-✅ Medical Examination
-✅ Medical Record
-✅ Prescription
-✅ Pharmacy
-✅ Billing
-✅ Reports
+✅ 1. Architecture Setup
+✅ 2. Master Data Completion
 
-REVISI
+🚧 3. General Inventory
+✅ Coding
+✅ Database
+✅ Backend
+✅ Frontend
+✅ Integrasi
+🚧 Runtime Testing
 
-MEDIVA — UX HARDENING
+🚧 4. Asset & Alkes
+✅ Coding
+✅ Database
+✅ Backend
+✅ Frontend
+✅ Integrasi
+✅ UI Consistency
+🚧 Runtime Testing
 
-⬜ Pindahkan Riwayat Medis ke Informasi Pasien
-✅ Perbesar typography seluruh clinical UI
-✅ Tingkatkan contrast teks penting
-✅ Tambahkan reusable Toast Notification
-✅ Perbesar Error / Warning / Success Alert
-✅ Tambahkan subtle transition / animation
-✅ Support Enter untuk form primary action
-✅ Jangan submit Enter dari textarea
-✅ Protect destructive / final actions
-✅ Optimasi loading & API response time
-⬜ Skeleton loading untuk data klinis
-✅ Pertahankan design asli MEDIVA
-✅ Pertahankan palette MEDIVA
+🚧 5. Procurement
+✅ Coding
+✅ Database
+✅ Backend
+✅ Frontend
+✅ Integrasi
+✅ UI Consistency
+🚧 Runtime Testing
 
-MEDIVA EXPANSION ROADMAP
+⬜ 6. Laboratory
+⬜ Database Laboratorium
+⬜ Model Laboratorium
+⬜ Relasi Pasien
+⬜ Relasi Visit / Kunjungan
+⬜ Relasi Dokter
+⬜ Relasi Unit
+⬜ Master Jenis Pemeriksaan
+⬜ Parameter Pemeriksaan
+⬜ Nilai Rujukan
+⬜ Jenis Sampel
+⬜ Permintaan Pemeriksaan
+⬜ Nomor Laboratorium Otomatis
+⬜ Pengambilan Sampel
+⬜ Status Sampel
+⬜ Proses Pemeriksaan
+⬜ Input Hasil
+⬜ Flag Hasil Abnormal
+⬜ Verifikasi Hasil
+⬜ Riwayat Hasil
+⬜ Integrasi Medical Record
+⬜ Integrasi Billing
+⬜ Audit Log
+⬜ Permission
+⬜ Search
+⬜ Filter
+⬜ Pagination
+⬜ Dashboard Laboratorium
+⬜ Frontend
+⬜ Backend API
+⬜ Runtime Testing
 
-☐ Architecture Setup
-☐ Master Data Completion
+⬜ 7. Operating Room
+⬜ 8. HR / SDM
+⬜ 9. Customer Service
+⬜ 10. Legal
+⬜ 11. Diklat & Event
+⬜ 12. Media / Marketing
+⬜ 13. MFK
 
 CLINICAL / MEDICAL
-☐ Keperawatan
-☐ Apoteker
-☐ Laboratorium
-☐ Radiologi
-☐ Operasi / Operating Room
-☐ IGD
-☐ Rawat Jalan
-☐ Rawat Inap
+
+⬜ Keperawatan
+⬜ Apoteker
+⬜ Laboratorium
+⬜ Radiologi
+⬜ Operasi / Operating Room
+⬜ IGD
+⬜ Rawat Jalan
+⬜ Rawat Inap
 
 OPERATIONAL HOSPITAL
-☐ General Inventory
-☐ Alat Kesehatan
-☐ Gudang
-☐ Procurement / Pengadaan
-☐ MFK
-☐ Maintenance
-☐ Housekeeping / Kebersihan
-☐ Asset Management
-☐ Security
-☐ Vendor / Supplier
+
+🚧 General Inventory
+🚧 Asset & Alkes
+🚧 Procurement / Pengadaan
+⬜ Gudang
+⬜ MFK
+⬜ Maintenance
+⬜ Housekeeping / Kebersihan
+⬜ Asset Management lanjutan
+⬜ Security
+⬜ Vendor / Supplier lanjutan
 
 CORPORATE / OFFICE
-☐ HR / SDM
-☐ Finance
-☐ Legal
-☐ Customer Service
-☐ Marketing
-☐ Media / Content
-☐ Diklat & Event
-☐ IT
-☐ Manajemen
-☐ Administrasi
 
-FOLDER ARCHITECTURE
-☐ clinical-medical/
-☐ operational-hospital/
-☐ corporate-office/
-☐ README setiap domain
-☐ docs/architecture/module-map.md
-
-1. Architecture Setup
-2. Master Data Completion
-3. General Inventory
-4. Asset & Alkes
-5. Procurement
-6. Laboratory
-7. Operating Room
-8. HR / SDM
-9. Customer Service
-10. Legal
-11. Diklat & Event
-12. Media / Marketing
-13. MFK
+⬜ HR / SDM
+⬜ Finance
+⬜ Legal
+⬜ Customer Service
+⬜ Marketing
+⬜ Media / Content
+⬜ Diklat & Event
+⬜ IT
+⬜ Manajemen
+⬜ Administrasi

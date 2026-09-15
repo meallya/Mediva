@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\PaymentMethodController;
 use App\Http\Controllers\Api\QueueController;
 use App\Http\Controllers\Api\RegistrationController;
 use App\Http\Controllers\Api\RoomController;
+use App\Http\Controllers\Api\InpatientRoomController;
 use App\Http\Controllers\Api\MedicalCodingController;
 use App\Http\Controllers\Api\MedicalRecordController;
 use App\Http\Controllers\Api\MedicineController;
@@ -20,6 +21,9 @@ use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\TariffController;
 use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\GeneralInventoryController;
+use App\Http\Controllers\Api\AssetController;
+use App\Http\Controllers\Api\ProcurementController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -516,6 +520,81 @@ Route::middleware(
             ]
         );
 
+        Route::delete(
+            '/master/rooms/{room}',
+            [
+                RoomController::class,
+                'destroy',
+            ]
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | INPATIENT ROOM
+        |--------------------------------------------------------------------------
+        |
+        | Kamar rawat inap adalah profil tambahan untuk rooms bertipe inpatient.
+        | OPTIONS HARUS sebelum {inpatientRoom}.
+        |
+        */
+
+        Route::get(
+            '/master/inpatient-rooms/options',
+            [
+                InpatientRoomController::class,
+                'options',
+            ]
+        );
+
+        Route::get(
+            '/master/inpatient-rooms',
+            [
+                InpatientRoomController::class,
+                'index',
+            ]
+        );
+
+        Route::post(
+            '/master/inpatient-rooms',
+            [
+                InpatientRoomController::class,
+                'store',
+            ]
+        );
+
+        Route::get(
+            '/master/inpatient-rooms/{inpatientRoom}',
+            [
+                InpatientRoomController::class,
+                'show',
+            ]
+        );
+
+        Route::put(
+            '/master/inpatient-rooms/{inpatientRoom}',
+            [
+                InpatientRoomController::class,
+                'update',
+            ]
+        );
+
+        Route::patch(
+            '/master/inpatient-rooms/{inpatientRoom}/status',
+            [
+                InpatientRoomController::class,
+                'toggleStatus',
+            ]
+        );
+
+        Route::delete(
+            '/master/inpatient-rooms/{inpatientRoom}',
+            [
+                InpatientRoomController::class,
+                'destroy',
+            ]
+        );
+
 
         /*
         |--------------------------------------------------------------------------
@@ -566,7 +645,7 @@ Route::middleware(
     }); // ================================================================
         // END permission:user.manage
         // ================================================================
-        
+
 
     /*
     |--------------------------------------------------------------------------
@@ -1134,6 +1213,182 @@ Route::delete(
 )->middleware(
     'permission:supplier.manage'
 );
+
+
+/*
+|--------------------------------------------------------------------------
+| GENERAL INVENTORY
+|--------------------------------------------------------------------------
+|
+| Inventaris umum dipisahkan dari stok obat Farmasi.
+| Domain ini menangani ATK, housekeeping, IT, MFK, consumable alkes,
+| spare part, kebutuhan event, dan barang operasional non-obat lainnya.
+|
+*/
+
+Route::get(
+    '/inventory/dashboard',
+    [GeneralInventoryController::class, 'dashboard']
+)->middleware('permission:inventory.view');
+
+Route::get(
+    '/inventory/options',
+    [GeneralInventoryController::class, 'options']
+)->middleware('permission:inventory.view');
+
+Route::get(
+    '/inventory/items',
+    [GeneralInventoryController::class, 'items']
+)->middleware('permission:inventory.view');
+
+Route::post(
+    '/inventory/items',
+    [GeneralInventoryController::class, 'storeItem']
+)->middleware('permission:inventory.manage');
+
+Route::put(
+    '/inventory/items/{inventoryItem}',
+    [GeneralInventoryController::class, 'updateItem']
+)->middleware('permission:inventory.manage');
+
+Route::patch(
+    '/inventory/items/{inventoryItem}/status',
+    [GeneralInventoryController::class, 'toggleItemStatus']
+)->middleware('permission:inventory.manage');
+
+Route::get(
+    '/inventory/categories',
+    [GeneralInventoryController::class, 'categories']
+)->middleware('permission:inventory.view');
+
+Route::post(
+    '/inventory/categories',
+    [GeneralInventoryController::class, 'storeCategory']
+)->middleware('permission:inventory.manage');
+
+Route::put(
+    '/inventory/categories/{inventoryCategory}',
+    [GeneralInventoryController::class, 'updateCategory']
+)->middleware('permission:inventory.manage');
+
+Route::get(
+    '/inventory/uoms',
+    [GeneralInventoryController::class, 'uoms']
+)->middleware('permission:inventory.view');
+
+Route::post(
+    '/inventory/uoms',
+    [GeneralInventoryController::class, 'storeUom']
+)->middleware('permission:inventory.manage');
+
+Route::put(
+    '/inventory/uoms/{inventoryUom}',
+    [GeneralInventoryController::class, 'updateUom']
+)->middleware('permission:inventory.manage');
+
+Route::get(
+    '/inventory/warehouses',
+    [GeneralInventoryController::class, 'warehouses']
+)->middleware('permission:inventory.view');
+
+Route::post(
+    '/inventory/warehouses',
+    [GeneralInventoryController::class, 'storeWarehouse']
+)->middleware('permission:inventory.manage');
+
+Route::put(
+    '/inventory/warehouses/{inventoryWarehouse}',
+    [GeneralInventoryController::class, 'updateWarehouse']
+)->middleware('permission:inventory.manage');
+
+Route::get(
+    '/inventory/stocks',
+    [GeneralInventoryController::class, 'stocks']
+)->middleware('permission:inventory.view');
+
+Route::post(
+    '/inventory/stock-in',
+    [GeneralInventoryController::class, 'stockIn']
+)->middleware('permission:inventory.stock_in');
+
+Route::post(
+    '/inventory/stock-out',
+    [GeneralInventoryController::class, 'stockOut']
+)->middleware('permission:inventory.stock_out');
+
+Route::get(
+    '/inventory/movements',
+    [GeneralInventoryController::class, 'movements']
+)->middleware('permission:inventory.view');
+
+Route::get(
+    '/inventory/requests',
+    [GeneralInventoryController::class, 'requests']
+)->middleware('permission:inventory.view');
+
+Route::post(
+    '/inventory/requests',
+    [GeneralInventoryController::class, 'storeRequest']
+)->middleware('permission:inventory.request');
+
+Route::patch(
+    '/inventory/requests/{inventoryRequest}/approve',
+    [GeneralInventoryController::class, 'approveRequest']
+)->middleware('permission:inventory.approve');
+
+Route::patch(
+    '/inventory/requests/{inventoryRequest}/reject',
+    [GeneralInventoryController::class, 'rejectRequest']
+)->middleware('permission:inventory.approve');
+
+Route::post(
+    '/inventory/requests/{inventoryRequest}/distribute',
+    [GeneralInventoryController::class, 'distributeRequest']
+)->middleware('permission:inventory.distribute');
+
+Route::post(
+    '/inventory/stock-opnames',
+    [GeneralInventoryController::class, 'stockOpname']
+)->middleware('permission:inventory.opname');
+
+
+/*
+|--------------------------------------------------------------------------
+| ASSET & ALKES
+|--------------------------------------------------------------------------
+*/
+Route::get('/assets/dashboard',[AssetController::class,'dashboard'])->middleware('permission:asset.view');
+Route::get('/assets/options',[AssetController::class,'options'])->middleware('permission:asset.view');
+Route::get('/assets/categories',[AssetController::class,'categories'])->middleware('permission:asset.view');
+Route::post('/assets/categories',[AssetController::class,'storeCategory'])->middleware('permission:asset.manage');
+Route::put('/assets/categories/{assetCategory}',[AssetController::class,'updateCategory'])->middleware('permission:asset.manage');
+Route::get('/assets',[AssetController::class,'index'])->middleware('permission:asset.view');
+Route::post('/assets',[AssetController::class,'store'])->middleware('permission:asset.manage');
+Route::put('/assets/{asset}',[AssetController::class,'update'])->middleware('permission:asset.manage');
+Route::patch('/assets/{asset}/status',[AssetController::class,'toggleStatus'])->middleware('permission:asset.manage');
+Route::get('/assets-maintenances',[AssetController::class,'maintenances'])->middleware('permission:asset.view');
+Route::post('/assets-maintenances',[AssetController::class,'storeMaintenance'])->middleware('permission:asset.maintenance');
+Route::get('/asset-mutations',[AssetController::class,'mutations'])->middleware('permission:asset.view');
+Route::post('/assets/{asset}/mutate',[AssetController::class,'mutate'])->middleware('permission:asset.transfer');
+
+/*
+|--------------------------------------------------------------------------
+| PROCUREMENT / PENGADAAN
+|--------------------------------------------------------------------------
+*/
+Route::get('/procurement/dashboard',[ProcurementController::class,'dashboard'])->middleware('permission:procurement.view');
+Route::get('/procurement/options',[ProcurementController::class,'options'])->middleware('permission:procurement.view');
+Route::get('/procurement/requests',[ProcurementController::class,'requests'])->middleware('permission:procurement.view');
+Route::post('/procurement/requests',[ProcurementController::class,'storeRequest'])->middleware('permission:procurement.request');
+Route::patch('/procurement/requests/{procurementRequest}/approve',[ProcurementController::class,'approve'])->middleware('permission:procurement.approve');
+Route::patch('/procurement/requests/{procurementRequest}/reject',[ProcurementController::class,'reject'])->middleware('permission:procurement.approve');
+Route::get('/procurement/quotations',[ProcurementController::class,'quotations'])->middleware('permission:procurement.view');
+Route::post('/procurement/quotations',[ProcurementController::class,'storeQuotation'])->middleware('permission:procurement.manage');
+Route::post('/procurement/quotations/{procurementQuotation}/select',[ProcurementController::class,'selectQuotation'])->middleware('permission:procurement.manage');
+Route::get('/procurement/orders',[ProcurementController::class,'orders'])->middleware('permission:procurement.view');
+Route::patch('/procurement/orders/{purchaseOrder}/issue',[ProcurementController::class,'issueOrder'])->middleware('permission:procurement.manage');
+Route::post('/procurement/orders/{purchaseOrder}/receive',[ProcurementController::class,'receive'])->middleware('permission:procurement.receive');
+Route::get('/procurement/receipts',[ProcurementController::class,'receipts'])->middleware('permission:procurement.view');
 
 /* BILLING LIST + SUMMARY */
 

@@ -22,10 +22,6 @@ const roomService = {
         return api.patch(`/master/rooms/${id}/status`);
     },
 
-    destroy(id) {
-        return api.delete(`/master/rooms/${id}`);
-    },
-
     getOptions() {
         return api.get("/master/rooms/options");
     },

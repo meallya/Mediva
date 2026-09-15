@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+    faBed,
     faCheck,
     faChevronDown,
-    faDoorOpen,
     faPen,
     faToggleOff,
     faToggleOn,
@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import DashboardLayout from "../../../../shared/components/layout/DashboardLayout";
-import roomService from "../services/roomService";
+import inpatientRoomService from "../services/inpatientRoomService";
 import {
     Field,
     MasterDataAlert,
@@ -31,28 +31,31 @@ import {
     textareaClass,
 } from "../../shared/masterDataUtils";
 
-const roomTypeLabels = {
+const wardTypeLabels = {
     inpatient: "Rawat Inap",
-    outpatient: "Rawat Jalan / Poli",
-    emergency: "IGD",
-    operating: "Ruang Operasi",
-    laboratory: "Laboratorium",
-    radiology: "Radiologi",
-    pharmacy: "Farmasi",
-    office: "Office / Administrasi",
-    warehouse: "Gudang",
-    support: "Penunjang / Utilitas",
-    public: "Area Publik",
-    other: "Lainnya",
+    icu: "ICU",
+    hcu: "HCU",
+    nicu: "NICU",
+    picu: "PICU",
+    isolation: "Isolasi",
+    perinatology: "Perinatologi",
+    maternity: "Kebidanan",
+};
+
+const roomClassLabels = {
+    vvip: "VVIP",
+    vip: "VIP",
+    class_1: "Kelas 1",
+    class_2: "Kelas 2",
+    class_3: "Kelas 3",
+    non_class: "Non Kelas / Khusus",
 };
 
 const emptyForm = {
-    unit_id: "",
-    code: "",
-    name: "",
-    room_type: "other",
-    floor: "",
-    capacity: "1",
+    room_id: "",
+    ward_type: "inpatient",
+    room_class: "non_class",
+    bed_capacity: "1",
     notes: "",
     is_active: true,
 };
@@ -109,50 +112,61 @@ function ModalSelect({
 
             {open && (
                 <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-[80] max-h-[220px] overflow-y-auto rounded-[9px] border border-[#d8d8d8] bg-white py-[5px] shadow-[0_12px_28px_rgba(0,0,0,0.14)]">
-                    {selectOptions.map((option) => {
-                        const active = String(option.value) === String(value);
+                    {selectOptions.length === 0 ? (
+                        <div className="px-[14px] py-[10px] text-[12px] text-[#999999]">
+                            Tidak ada pilihan tersedia.
+                        </div>
+                    ) : (
+                        selectOptions.map((option) => {
+                            const active = String(option.value) === String(value);
 
-                        return (
-                            <button
-                                key={String(option.value)}
-                                type="button"
-                                onClick={() => {
-                                    onChange(option.value);
-                                    setOpen(false);
-                                }}
-                                className={`flex w-full items-center justify-between gap-[12px] px-[14px] py-[9px] text-left text-[13px] transition ${
-                                    active
-                                        ? "bg-[#eef6ff] font-medium text-[#047AF7]"
-                                        : "text-[#444444] hover:bg-[#f7f9fb]"
-                                }`}
-                            >
-                                <span className="min-w-0 flex-1 truncate">
-                                    {option.label}
-                                </span>
+                            return (
+                                <button
+                                    key={String(option.value)}
+                                    type="button"
+                                    onClick={() => {
+                                        onChange(option.value);
+                                        setOpen(false);
+                                    }}
+                                    className={`flex w-full items-center justify-between gap-[12px] px-[14px] py-[9px] text-left text-[13px] transition ${
+                                        active
+                                            ? "bg-[#eef6ff] font-medium text-[#047AF7]"
+                                            : "text-[#444444] hover:bg-[#f7f9fb]"
+                                    }`}
+                                >
+                                    <span className="min-w-0 flex-1 truncate">
+                                        {option.label}
+                                    </span>
 
-                                {active && (
-                                    <FontAwesomeIcon
-                                        icon={faCheck}
-                                        className="shrink-0 text-[11px]"
-                                    />
-                                )}
-                            </button>
-                        );
-                    })}
+                                    {active && (
+                                        <FontAwesomeIcon
+                                            icon={faCheck}
+                                            className="shrink-0 text-[11px]"
+                                        />
+                                    )}
+                                </button>
+                            );
+                        })
+                    )}
                 </div>
             )}
         </div>
     );
 }
 
-export default function RoomListPage() {
+export default function InpatientRoomListPage() {
     const [rows, setRows] = useState([]);
     const [meta, setMeta] = useState(normalizeMeta());
-    const [options, setOptions] = useState({ units: [], room_types: [] });
+    const [options, setOptions] = useState({
+        rooms: [],
+        ward_types: [],
+        room_classes: [],
+    });
 
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("all");
-    const [roomType, setRoomType] = useState("all");
+    const [wardType, setWardType] = useState("all");
+    const [roomClass, setRoomClass] = useState("all");
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -170,10 +184,16 @@ export default function RoomListPage() {
 
     const loadOptions = async () => {
         try {
-            const response = await roomService.getOptions();
-            setOptions(response?.data ?? { units: [], room_types: [] });
+            const response = await inpatientRoomService.getOptions();
+            setOptions(
+                response?.data ?? {
+                    rooms: [],
+                    ward_types: [],
+                    room_classes: [],
+                },
+            );
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal memuat pilihan ruangan RS."));
+            setError(getErrorMessage(err, "Gagal memuat pilihan kamar rawat inap."));
         }
     };
 
@@ -182,18 +202,19 @@ export default function RoomListPage() {
             setLoading(true);
             setError("");
 
-            const response = await roomService.getAll({
+            const response = await inpatientRoomService.getAll({
                 page,
                 search: search.trim(),
                 status,
-                room_type: roomType,
+                ward_type: wardType,
+                room_class: roomClass,
                 per_page: 20,
             });
 
             setRows(Array.isArray(response?.data) ? response.data : []);
             setMeta(normalizeMeta(response));
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal memuat data ruangan RS."));
+            setError(getErrorMessage(err, "Gagal memuat kamar rawat inap."));
         } finally {
             setLoading(false);
         }
@@ -207,7 +228,20 @@ export default function RoomListPage() {
         const timer = window.setTimeout(() => load(1), 250);
         return () => window.clearTimeout(timer);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search, status, roomType]);
+    }, [search, status, wardType, roomClass]);
+
+    const availableRoomOptions = (options.rooms ?? [])
+        .filter((room) => {
+            if (!room.inpatient_room_id) {
+                return true;
+            }
+
+            return editing && Number(room.inpatient_room_id) === Number(editing.id);
+        })
+        .map((room) => ({
+            value: String(room.id),
+            label: `${room.name} — ${room.code}${room.unit?.name ? ` — ${room.unit.name}` : ""}`,
+        }));
 
     const openCreate = () => {
         setEditing(null);
@@ -216,17 +250,15 @@ export default function RoomListPage() {
         setModalOpen(true);
     };
 
-    const openEdit = (room) => {
-        setEditing(room);
+    const openEdit = (row) => {
+        setEditing(row);
         setForm({
-            unit_id: room.unit_id ? String(room.unit_id) : "",
-            code: room.code ?? "",
-            name: room.name ?? "",
-            room_type: room.room_type ?? "other",
-            floor: room.floor ?? "",
-            capacity: String(room.capacity ?? 1),
-            notes: room.notes ?? "",
-            is_active: Boolean(room.is_active),
+            room_id: String(row.room_id ?? ""),
+            ward_type: row.ward_type ?? "inpatient",
+            room_class: row.room_class ?? "non_class",
+            bed_capacity: String(row.bed_capacity ?? 1),
+            notes: row.notes ?? "",
+            is_active: Boolean(row.is_active),
         });
         setError("");
         setModalOpen(true);
@@ -240,74 +272,63 @@ export default function RoomListPage() {
             setError("");
 
             const payload = {
-                unit_id: form.unit_id ? Number(form.unit_id) : null,
-                code: form.code.trim().toUpperCase(),
-                name: form.name.trim(),
-                room_type: form.room_type,
-                floor: form.floor.trim() || null,
-                capacity: Number(form.capacity || 1),
+                room_id: Number(form.room_id),
+                ward_type: form.ward_type,
+                room_class: form.room_class,
+                bed_capacity: Number(form.bed_capacity || 1),
                 notes: form.notes.trim() || null,
                 is_active: Boolean(form.is_active),
             };
 
             if (editing) {
-                await roomService.update(editing.id, payload);
-                flash("Ruangan RS berhasil diperbarui.");
+                await inpatientRoomService.update(editing.id, payload);
+                flash("Kamar rawat inap berhasil diperbarui.");
             } else {
-                await roomService.create(payload);
-                flash("Ruangan RS berhasil ditambahkan.");
+                await inpatientRoomService.create(payload);
+                flash("Kamar rawat inap berhasil ditambahkan.");
             }
 
             setModalOpen(false);
-            await load(meta.current_page);
+            await Promise.all([
+                load(meta.current_page),
+                loadOptions(),
+            ]);
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal menyimpan data ruangan RS."));
+            setError(getErrorMessage(err, "Gagal menyimpan kamar rawat inap."));
         } finally {
             setSaving(false);
         }
     };
 
-    const toggleStatus = async (room) => {
+    const toggleStatus = async (row) => {
         try {
             setSaving(true);
             setError("");
-            await roomService.toggleStatus(room.id);
+            await inpatientRoomService.toggleStatus(row.id);
             await load(meta.current_page);
-            flash("Status ruangan RS berhasil diubah.");
+            flash("Status kamar rawat inap berhasil diubah.");
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal mengubah status ruangan RS."));
+            setError(getErrorMessage(err, "Gagal mengubah status kamar rawat inap."));
         } finally {
             setSaving(false);
         }
     };
 
-    const requestDelete = (room) => {
-        if (room.inpatient_room) {
-            setError(
-                "Ruangan RS ini sudah terhubung ke Kamar Rawat Inap. Hapus profil Kamar Rawat Inap terlebih dahulu.",
-            );
-            return;
-        }
-
-        setError("");
-        setDeleteTarget(room);
-    };
-
-    const removeRoom = async () => {
+    const removeInpatientRoom = async () => {
         if (!deleteTarget) return;
 
         try {
             setSaving(true);
             setError("");
-            await roomService.destroy(deleteTarget.id);
+            await inpatientRoomService.destroy(deleteTarget.id);
             setDeleteTarget(null);
             await Promise.all([
                 load(meta.current_page),
                 loadOptions(),
             ]);
-            flash("Ruangan RS berhasil dihapus.");
+            flash("Kamar rawat inap berhasil dihapus.");
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal menghapus ruangan RS."));
+            setError(getErrorMessage(err, "Gagal menghapus kamar rawat inap."));
         } finally {
             setSaving(false);
         }
@@ -317,32 +338,45 @@ export default function RoomListPage() {
         <DashboardLayout>
             <div className="min-h-[calc(100vh-88px)] bg-[#fafbfc] p-[30px]">
                 <MasterDataHeader
-                    title="Master Ruangan RS"
-                    subtitle="Seluruh ruangan fisik rumah sakit. Ruangan bertipe Rawat Inap dapat dikonfigurasi lebih lanjut pada menu Kamar Rawat Inap."
-                    buttonLabel="Tambah Ruangan RS"
+                    title="Kamar Rawat Inap"
+                    subtitle="Profil rawat inap yang terhubung ke Ruangan RS bertipe Rawat Inap. Bed individual akan dikelola pada Bed Management."
+                    buttonLabel="Tambah Kamar Rawat Inap"
                     onCreate={openCreate}
-                    icon={faDoorOpen}
+                    icon={faBed}
                 />
 
                 <MasterDataAlert error={error} success={success} />
 
                 <div className="mt-[20px] rounded-[14px] border border-[#ececec] bg-white p-[16px]">
-                    <div className="grid grid-cols-1 gap-[12px] lg:grid-cols-[1fr_220px_190px]">
+                    <div className="grid grid-cols-1 gap-[12px] xl:grid-cols-[1fr_190px_190px_180px]">
                         <SearchBox
                             value={search}
                             onChange={setSearch}
-                            placeholder="Cari kode, nama ruangan, lantai, atau unit..."
+                            placeholder="Cari kamar, kode ruangan, lantai, atau unit..."
                         />
 
                         <select
-                            value={roomType}
-                            onChange={(event) => setRoomType(event.target.value)}
+                            value={wardType}
+                            onChange={(event) => setWardType(event.target.value)}
                             className={inputClass}
                         >
-                            <option value="all">Semua Jenis Ruangan</option>
-                            {(options.room_types ?? []).map((type) => (
+                            <option value="all">Semua Jenis Perawatan</option>
+                            {(options.ward_types ?? []).map((type) => (
                                 <option key={type} value={type}>
-                                    {roomTypeLabels[type] ?? type}
+                                    {wardTypeLabels[type] ?? type}
+                                </option>
+                            ))}
+                        </select>
+
+                        <select
+                            value={roomClass}
+                            onChange={(event) => setRoomClass(event.target.value)}
+                            className={inputClass}
+                        >
+                            <option value="all">Semua Kelas</option>
+                            {(options.room_classes ?? []).map((type) => (
+                                <option key={type} value={type}>
+                                    {roomClassLabels[type] ?? type}
                                 </option>
                             ))}
                         </select>
@@ -361,16 +395,16 @@ export default function RoomListPage() {
 
                 <div className="mt-[16px] overflow-hidden rounded-[14px] border border-[#ececec] bg-white">
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[1040px]">
+                        <table className="w-full min-w-[1050px]">
                             <thead className="bg-[#fafbfc]">
                                 <tr className="border-b border-[#eeeeee]">
                                     <Th>Kode</Th>
-                                    <Th>Nama Ruangan</Th>
+                                    <Th>Kamar / Ruangan</Th>
                                     <Th>Unit</Th>
-                                    <Th>Jenis</Th>
+                                    <Th>Jenis Perawatan</Th>
+                                    <Th>Kelas</Th>
+                                    <Th>Kapasitas Bed</Th>
                                     <Th>Lantai</Th>
-                                    <Th>Kapasitas Ruang</Th>
-                                    <Th>Rawat Inap</Th>
                                     <Th>Status</Th>
                                     <Th>Aksi</Th>
                                 </tr>
@@ -381,43 +415,35 @@ export default function RoomListPage() {
                                     <TableEmpty
                                         loading={loading}
                                         colSpan={9}
-                                        emptyText="Belum ada data ruangan RS."
+                                        emptyText="Belum ada kamar rawat inap."
                                     />
                                 ) : (
-                                    rows.map((room) => (
+                                    rows.map((row) => (
                                         <tr
-                                            key={room.id}
+                                            key={row.id}
                                             className="border-b border-[#f0f0f0] last:border-b-0 hover:bg-[#fcfdff]"
                                         >
-                                            <Td>{room.code}</Td>
+                                            <Td>{row.room?.code ?? "-"}</Td>
                                             <Td>
                                                 <p className="font-medium text-[#343434]">
-                                                    {room.name}
+                                                    {row.room?.name ?? "-"}
                                                 </p>
                                             </Td>
-                                            <Td>{room.unit?.name ?? "Belum ditentukan"}</Td>
-                                            <Td>{roomTypeLabels[room.room_type] ?? room.room_type ?? "-"}</Td>
-                                            <Td>{room.floor ?? "-"}</Td>
-                                            <Td>{room.capacity ?? 1}</Td>
+                                            <Td>{row.room?.unit?.name ?? "Belum ditentukan"}</Td>
+                                            <Td>{wardTypeLabels[row.ward_type] ?? row.ward_type}</Td>
+                                            <Td>{roomClassLabels[row.room_class] ?? row.room_class}</Td>
+                                            <Td>{row.bed_capacity ?? 1}</Td>
+                                            <Td>{row.room?.floor ?? "-"}</Td>
                                             <Td>
-                                                {room.inpatient_room ? (
-                                                    <span className="inline-flex rounded-full border border-[#C2E1F4] bg-[#f4f9ff] px-[8px] py-[4px] text-[11px] font-medium text-[#047AF7]">
-                                                        Terhubung
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-[12px] text-[#999999]">-</span>
-                                                )}
-                                            </Td>
-                                            <Td>
-                                                <StatusBadge active={room.is_active} />
+                                                <StatusBadge active={row.is_active} />
                                             </Td>
                                             <Td>
                                                 <div className="flex gap-[6px]">
                                                     <button
                                                         type="button"
-                                                        onClick={() => openEdit(room)}
+                                                        onClick={() => openEdit(row)}
                                                         className="flex h-[30px] w-[30px] items-center justify-center rounded-[7px] border border-[#dddddd] text-[#666666] hover:bg-[#f8f8f8]"
-                                                        title="Edit ruangan RS"
+                                                        title="Edit kamar rawat inap"
                                                     >
                                                         <FontAwesomeIcon icon={faPen} />
                                                     </button>
@@ -425,25 +451,24 @@ export default function RoomListPage() {
                                                     <button
                                                         type="button"
                                                         disabled={saving}
-                                                        onClick={() => toggleStatus(room)}
+                                                        onClick={() => toggleStatus(row)}
                                                         className="flex h-[30px] w-[30px] items-center justify-center rounded-[7px] border border-[#C2E1F4] text-[#047AF7] hover:bg-[#f4f9ff] disabled:opacity-50"
                                                         title="Ubah status"
                                                     >
                                                         <FontAwesomeIcon
-                                                            icon={room.is_active ? faToggleOn : faToggleOff}
+                                                            icon={row.is_active ? faToggleOn : faToggleOff}
                                                         />
                                                     </button>
 
                                                     <button
                                                         type="button"
                                                         disabled={saving}
-                                                        onClick={() => requestDelete(room)}
+                                                        onClick={() => {
+                                                            setError("");
+                                                            setDeleteTarget(row);
+                                                        }}
                                                         className="flex h-[30px] w-[30px] items-center justify-center rounded-[7px] border border-[#f3c7c7] text-[#d9534f] hover:bg-[#fff7f7] disabled:opacity-50"
-                                                        title={
-                                                            room.inpatient_room
-                                                                ? "Hapus Kamar Rawat Inap terlebih dahulu"
-                                                                : "Hapus ruangan RS"
-                                                        }
+                                                        title="Hapus kamar rawat inap"
                                                     >
                                                         <FontAwesomeIcon icon={faTrash} />
                                                     </button>
@@ -466,115 +491,81 @@ export default function RoomListPage() {
 
             {modalOpen && (
                 <Modal
-                    title={editing ? "Edit Ruangan RS" : "Tambah Ruangan RS"}
-                    subtitle="Data lokasi fisik ruangan di rumah sakit."
+                    title={editing ? "Edit Kamar Rawat Inap" : "Tambah Kamar Rawat Inap"}
+                    subtitle="Kamar rawat inap harus berasal dari Ruangan RS dengan jenis Rawat Inap."
                     onClose={() => setModalOpen(false)}
                 >
                     <form onSubmit={save} className="p-[20px]" data-enter-scope>
                         <div className="grid grid-cols-1 gap-[14px] md:grid-cols-2">
-                            <Field label="Kode Ruangan" required>
-                                <input
+                            <div className="md:col-span-2">
+                                <Field
+                                    label="Ruangan RS"
                                     required
-                                    value={form.code}
-                                    onChange={(event) =>
-                                        setForm((prev) => ({
-                                            ...prev,
-                                            code: event.target.value.toUpperCase(),
-                                        }))
-                                    }
-                                    className={inputClass}
-                                    placeholder="RI-MAWAR-01"
-                                />
-                            </Field>
+                                    helper="Jika pilihan kosong, buat atau ubah Ruangan RS menjadi jenis Rawat Inap terlebih dahulu."
+                                >
+                                    <ModalSelect
+                                        value={form.room_id}
+                                        onChange={(nextValue) =>
+                                            setForm((prev) => ({
+                                                ...prev,
+                                                room_id: String(nextValue),
+                                            }))
+                                        }
+                                        options={availableRoomOptions}
+                                        placeholder="Pilih ruangan RS"
+                                    />
+                                </Field>
+                            </div>
 
-                            <Field label="Nama Ruangan" required>
-                                <input
-                                    required
-                                    value={form.name}
-                                    onChange={(event) =>
-                                        setForm((prev) => ({
-                                            ...prev,
-                                            name: event.target.value,
-                                        }))
-                                    }
-                                    className={inputClass}
-                                    placeholder="Ruang Mawar"
-                                />
-                            </Field>
-
-                            <Field label="Unit">
+                            <Field label="Jenis Perawatan" required>
                                 <ModalSelect
-                                    value={form.unit_id}
+                                    value={form.ward_type}
                                     onChange={(nextValue) =>
                                         setForm((prev) => ({
                                             ...prev,
-                                            unit_id: String(nextValue),
+                                            ward_type: String(nextValue),
                                         }))
                                     }
-                                    options={[
-                                        { value: "", label: "Belum ditentukan" },
-                                        ...(options.units ?? []).map((unit) => ({
-                                            value: String(unit.id),
-                                            label: `${unit.name} — ${unit.code}`,
-                                        })),
-                                    ]}
-                                    placeholder="Pilih unit"
-                                />
-                            </Field>
-
-                            <Field
-                                label="Jenis Ruangan"
-                                required
-                                helper="Pilih Rawat Inap jika ruangan ini nantinya memiliki profil kamar/bed."
-                            >
-                                <ModalSelect
-                                    value={form.room_type}
-                                    onChange={(nextValue) =>
-                                        setForm((prev) => ({
-                                            ...prev,
-                                            room_type: String(nextValue),
-                                        }))
-                                    }
-                                    options={(options.room_types?.length
-                                        ? options.room_types
-                                        : Object.keys(roomTypeLabels)
-                                    ).map((type) => ({
+                                    options={(options.ward_types ?? Object.keys(wardTypeLabels)).map((type) => ({
                                         value: type,
-                                        label: roomTypeLabels[type] ?? type,
+                                        label: wardTypeLabels[type] ?? type,
                                     }))}
-                                    placeholder="Pilih jenis ruangan"
+                                    placeholder="Pilih jenis perawatan"
                                 />
                             </Field>
 
-                            <Field label="Lantai">
-                                <input
-                                    value={form.floor}
-                                    onChange={(event) =>
+                            <Field label="Kelas Kamar" required>
+                                <ModalSelect
+                                    value={form.room_class}
+                                    onChange={(nextValue) =>
                                         setForm((prev) => ({
                                             ...prev,
-                                            floor: event.target.value,
+                                            room_class: String(nextValue),
                                         }))
                                     }
-                                    className={inputClass}
-                                    placeholder="Lantai 2"
+                                    options={(options.room_classes ?? Object.keys(roomClassLabels)).map((type) => ({
+                                        value: type,
+                                        label: roomClassLabels[type] ?? type,
+                                    }))}
+                                    placeholder="Pilih kelas kamar"
                                 />
                             </Field>
 
                             <Field
-                                label="Kapasitas Ruang"
+                                label="Kapasitas Bed"
                                 required
-                                helper="Kapasitas umum ruangan, bukan jumlah bed. Kapasitas bed diatur pada Kamar Rawat Inap."
+                                helper="Jumlah maksimal bed untuk kamar ini. Bed individual dibuat nanti di Bed Management."
                             >
                                 <input
                                     required
                                     type="number"
                                     min="1"
                                     max="9999"
-                                    value={form.capacity}
+                                    value={form.bed_capacity}
                                     onChange={(event) =>
                                         setForm((prev) => ({
                                             ...prev,
-                                            capacity: event.target.value,
+                                            bed_capacity: event.target.value,
                                         }))
                                     }
                                     className={inputClass}
@@ -592,7 +583,7 @@ export default function RoomListPage() {
                                             }))
                                         }
                                         className={textareaClass}
-                                        placeholder="Catatan ruangan..."
+                                        placeholder="Catatan kamar rawat inap..."
                                     />
                                 </Field>
                             </div>
@@ -609,7 +600,7 @@ export default function RoomListPage() {
                                     }))
                                 }
                             />
-                            Ruangan aktif
+                            Kamar rawat inap aktif
                         </label>
 
                         <div className="mt-[22px] flex justify-end gap-[9px]">
@@ -623,7 +614,7 @@ export default function RoomListPage() {
 
                             <button
                                 type="submit"
-                                disabled={saving}
+                                disabled={saving || !form.room_id}
                                 className="h-[40px] rounded-[9px] bg-[#047AF7] px-[16px] text-[13px] font-medium text-white disabled:opacity-50"
                             >
                                 {saving ? "Menyimpan..." : "Simpan"}
@@ -635,17 +626,17 @@ export default function RoomListPage() {
 
             {deleteTarget && (
                 <Modal
-                    title="Hapus Ruangan RS"
-                    subtitle="Tindakan ini hanya diperbolehkan untuk ruangan yang belum digunakan oleh data lain."
+                    title="Hapus Kamar Rawat Inap"
+                    subtitle="Menghapus profil kamar tidak menghapus Ruangan RS yang terhubung."
                     onClose={() => !saving && setDeleteTarget(null)}
                 >
                     <div className="p-[20px]">
                         <p className="text-[13px] leading-[1.7] text-[#555555]">
-                            Hapus <span className="font-semibold text-[#333333]">{deleteTarget.name}</span> ({deleteTarget.code})?
+                            Hapus profil kamar <span className="font-semibold text-[#333333]">{deleteTarget.room?.name ?? "-"}</span>?
                         </p>
 
                         <p className="mt-[8px] text-[12px] leading-[1.6] text-[#999999]">
-                            Jika ruangan sudah dipakai oleh modul lain, MEDIVA akan menolak penghapusan dan menyarankan menonaktifkan data.
+                            Ruangan RS tetap tersimpan. Jika kamar sudah dipakai oleh data lain, MEDIVA akan menolak penghapusan.
                         </p>
 
                         <div className="mt-[22px] flex justify-end gap-[9px]">
@@ -661,10 +652,10 @@ export default function RoomListPage() {
                             <button
                                 type="button"
                                 disabled={saving}
-                                onClick={removeRoom}
+                                onClick={removeInpatientRoom}
                                 className="h-[40px] rounded-[9px] bg-[#d9534f] px-[16px] text-[13px] font-medium text-white disabled:opacity-50"
                             >
-                                {saving ? "Menghapus..." : "Hapus Ruangan"}
+                                {saving ? "Menghapus..." : "Hapus Kamar"}
                             </button>
                         </div>
                     </div>

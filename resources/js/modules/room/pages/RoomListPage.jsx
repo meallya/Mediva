@@ -7,7 +7,6 @@ import {
     faPen,
     faToggleOff,
     faToggleOn,
-    faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
 import DashboardLayout from "../../../../shared/components/layout/DashboardLayout";
@@ -160,7 +159,6 @@ export default function RoomListPage() {
 
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
-    const [deleteTarget, setDeleteTarget] = useState(null);
     const [form, setForm] = useState(emptyForm);
 
     const flash = (message) => {
@@ -276,38 +274,6 @@ export default function RoomListPage() {
             flash("Status ruangan RS berhasil diubah.");
         } catch (err) {
             setError(getErrorMessage(err, "Gagal mengubah status ruangan RS."));
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    const requestDelete = (room) => {
-        if (room.inpatient_room) {
-            setError(
-                "Ruangan RS ini sudah terhubung ke Kamar Rawat Inap. Hapus profil Kamar Rawat Inap terlebih dahulu.",
-            );
-            return;
-        }
-
-        setError("");
-        setDeleteTarget(room);
-    };
-
-    const removeRoom = async () => {
-        if (!deleteTarget) return;
-
-        try {
-            setSaving(true);
-            setError("");
-            await roomService.destroy(deleteTarget.id);
-            setDeleteTarget(null);
-            await Promise.all([
-                load(meta.current_page),
-                loadOptions(),
-            ]);
-            flash("Ruangan RS berhasil dihapus.");
-        } catch (err) {
-            setError(getErrorMessage(err, "Gagal menghapus ruangan RS."));
         } finally {
             setSaving(false);
         }
@@ -432,20 +398,6 @@ export default function RoomListPage() {
                                                         <FontAwesomeIcon
                                                             icon={room.is_active ? faToggleOn : faToggleOff}
                                                         />
-                                                    </button>
-
-                                                    <button
-                                                        type="button"
-                                                        disabled={saving}
-                                                        onClick={() => requestDelete(room)}
-                                                        className="flex h-[30px] w-[30px] items-center justify-center rounded-[7px] border border-[#f3c7c7] text-[#d9534f] hover:bg-[#fff7f7] disabled:opacity-50"
-                                                        title={
-                                                            room.inpatient_room
-                                                                ? "Hapus Kamar Rawat Inap terlebih dahulu"
-                                                                : "Hapus ruangan RS"
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon icon={faTrash} />
                                                     </button>
                                                 </div>
                                             </Td>
@@ -632,45 +584,6 @@ export default function RoomListPage() {
                     </form>
                 </Modal>
             )}
-
-            {deleteTarget && (
-                <Modal
-                    title="Hapus Ruangan RS"
-                    subtitle="Tindakan ini hanya diperbolehkan untuk ruangan yang belum digunakan oleh data lain."
-                    onClose={() => !saving && setDeleteTarget(null)}
-                >
-                    <div className="p-[20px]">
-                        <p className="text-[13px] leading-[1.7] text-[#555555]">
-                            Hapus <span className="font-semibold text-[#333333]">{deleteTarget.name}</span> ({deleteTarget.code})?
-                        </p>
-
-                        <p className="mt-[8px] text-[12px] leading-[1.6] text-[#999999]">
-                            Jika ruangan sudah dipakai oleh modul lain, MEDIVA akan menolak penghapusan dan menyarankan menonaktifkan data.
-                        </p>
-
-                        <div className="mt-[22px] flex justify-end gap-[9px]">
-                            <button
-                                type="button"
-                                disabled={saving}
-                                onClick={() => setDeleteTarget(null)}
-                                className="h-[40px] rounded-[9px] border border-[#dddddd] px-[15px] text-[13px] text-[#555555] disabled:opacity-50"
-                            >
-                                Batal
-                            </button>
-
-                            <button
-                                type="button"
-                                disabled={saving}
-                                onClick={removeRoom}
-                                className="h-[40px] rounded-[9px] bg-[#d9534f] px-[16px] text-[13px] font-medium text-white disabled:opacity-50"
-                            >
-                                {saving ? "Menghapus..." : "Hapus Ruangan"}
-                            </button>
-                        </div>
-                    </div>
-                </Modal>
-            )}
-
         </DashboardLayout>
     );
 }

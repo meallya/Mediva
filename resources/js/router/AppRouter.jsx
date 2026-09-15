@@ -29,6 +29,7 @@ import EmployeeListPage from "../modules/master-data/employee/pages/EmployeeList
 import DoctorListPage from "../modules/master-data/doctor/pages/DoctorListPage";
 import ClinicListPage from "../modules/master-data/clinic/pages/ClinicListPage";
 import RoomListPage from "../modules/master-data/room/pages/RoomListPage";
+import InpatientRoomListPage from "../modules/master-data/inpatient-room/pages/InpatientRoomListPage";
 import PaymentMethodListPage from "../modules/master-data/payment-method/pages/PaymentMethodListPage";
 
 import PrescriptionQueuePage from "../modules/pharmacy/pages/PrescriptionQueuePage";
@@ -36,6 +37,10 @@ import PrescriptionQueuePage from "../modules/pharmacy/pages/PrescriptionQueuePa
 import PrescriptionDetailPage from "../modules/pharmacy/pages/PrescriptionDetailPage";
 
 import InventoryPage from "../modules/pharmacy/pages/InventoryPage";
+
+import GeneralInventoryPage from "../modules/operational-hospital/inventory/pages/GeneralInventoryPage";
+import AssetManagementPage from "../modules/operational-hospital/asset-management/pages/AssetManagementPage";
+import ProcurementPage from "../modules/operational-hospital/procurement/pages/ProcurementPage";
 
 import BillingListPage from "../modules/billing/pages/BillingListPage";
 
@@ -56,6 +61,10 @@ export default function AppRouter() {
 
             <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
+
+                <Route path="/inventory" element={<GeneralInventoryPage />} />
+                <Route path="/assets" element={<AssetManagementPage />} />
+                <Route path="/procurement" element={<ProcurementPage />} />
 
                 {/* PATIENT */}
 
@@ -124,6 +133,10 @@ export default function AppRouter() {
             <Route path="/master/doctors" element={<DoctorListPage />} />
             <Route path="/master/clinics" element={<ClinicListPage />} />
             <Route path="/master/rooms" element={<RoomListPage />} />
+            <Route
+                path="/master/inpatient-rooms"
+                element={<InpatientRoomListPage />}
+            />
             <Route
                 path="/master/payment-methods"
                 element={<PaymentMethodListPage />}

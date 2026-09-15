@@ -1,4 +1,5 @@
 import {
+    faBed,
     faCapsules,
     faClipboardList,
     faCreditCard,
@@ -17,6 +18,8 @@ import {
     faCashRegister,
     faReceipt,
     faChartColumn,
+    faLaptopMedical,
+    faCartShopping,
 } from "@fortawesome/free-solid-svg-icons";
 
 /*
@@ -49,6 +52,45 @@ const navigation = [
 
         permissions: [],
 
+        available: true,
+    },
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | GENERAL INVENTORY
+    |--------------------------------------------------------------------------
+    */
+
+    {
+        type: "link",
+
+        label: "Inventaris Umum",
+
+        path: "/inventory",
+
+        icon: faBoxesStacked,
+
+        permissions: ["inventory.view"],
+
+        available: true,
+    },
+
+    {
+        type: "link",
+        label: "Asset & Alkes",
+        path: "/assets",
+        icon: faLaptopMedical,
+        permissions: ["asset.view"],
+        available: true,
+    },
+
+    {
+        type: "link",
+        label: "Procurement",
+        path: "/procurement",
+        icon: faCartShopping,
+        permissions: ["procurement.view"],
         available: true,
     },
 
@@ -264,11 +306,23 @@ const navigation = [
             */
 
             {
-                label: "Ruangan",
+                label: "Ruangan RS",
 
                 path: "/master/rooms",
 
                 icon: faDoorOpen,
+
+                permissions: ["user.manage"],
+
+                available: true,
+            },
+
+            {
+                label: "Kamar Rawat Inap",
+
+                path: "/master/inpatient-rooms",
+
+                icon: faBed,
 
                 permissions: ["user.manage"],
 

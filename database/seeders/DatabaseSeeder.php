@@ -12,12 +12,17 @@ class DatabaseSeeder extends Seeder
             MedivaAuthSeeder::class,
         ]);
 
-         $this->call([
+        $this->call([
             BillingSeeder::class,
         ]);
 
         $this->call([
             ReportSeeder::class,
+        ]);
+
+        $this->call([
+            GeneralInventoryPermissionSeeder::class,
+            OperationalHospitalPermissionSeeder::class,
         ]);
     }
 }

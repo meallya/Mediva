@@ -6,17 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\Room;
 use App\Models\Unit;
 use App\Services\AuditLogger;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class RoomController extends Controller
 {
+    /**
+     * Room = seluruh ruangan fisik rumah sakit.
+     * Detail khusus rawat inap disimpan terpisah pada inpatient_rooms.
+     */
     private function roomTypes(): array
     {
         return [
-            'outpatient',
             'inpatient',
+            'outpatient',
             'emergency',
             'operating',
             'laboratory',
@@ -24,6 +29,8 @@ class RoomController extends Controller
             'pharmacy',
             'office',
             'warehouse',
+            'support',
+            'public',
             'other',
         ];
     }
@@ -41,7 +48,6 @@ class RoomController extends Controller
                         'code',
                         'type',
                     ]),
-
                 'room_types' => $this->roomTypes(),
             ],
         ]);
@@ -50,7 +56,10 @@ class RoomController extends Controller
     public function index(Request $request): JsonResponse
     {
         $query = Room::query()
-            ->with('unit:id,name,code,type')
+            ->with([
+                'unit:id,name,code,type',
+                'inpatientRoom:id,room_id,ward_type,room_class,bed_capacity,is_active',
+            ])
             ->latest('id');
 
         if ($request->filled('search')) {
@@ -88,7 +97,10 @@ class RoomController extends Controller
             $query->where('unit_id', $request->integer('unit_id'));
         }
 
-        $perPage = max(5, min((int) $request->query('per_page', 20), 100));
+        $perPage = max(
+            5,
+            min((int) $request->query('per_page', 20), 100)
+        );
 
         return response()->json(
             $query->paginate($perPage)
@@ -108,20 +120,20 @@ class RoomController extends Controller
             request: $request,
             action: 'room.create',
             module: 'master_data',
-            description: 'Master ruangan dibuat.',
+            description: 'Master ruangan RS dibuat.',
             newValues: $room->toArray(),
         );
 
         return response()->json([
-            'message' => 'Ruangan berhasil ditambahkan.',
-            'data' => $room->load('unit'),
+            'message' => 'Ruangan RS berhasil ditambahkan.',
+            'data' => $room->load(['unit', 'inpatientRoom']),
         ], 201);
     }
 
     public function show(Room $room): JsonResponse
     {
         return response()->json([
-            'data' => $room->load('unit'),
+            'data' => $room->load(['unit', 'inpatientRoom']),
         ]);
     }
 
@@ -145,14 +157,14 @@ class RoomController extends Controller
             request: $request,
             action: 'room.update',
             module: 'master_data',
-            description: 'Master ruangan diperbarui.',
+            description: 'Master ruangan RS diperbarui.',
             oldValues: $oldValues,
             newValues: $room->fresh()->toArray(),
         );
 
         return response()->json([
-            'message' => 'Ruangan berhasil diperbarui.',
-            'data' => $room->fresh('unit'),
+            'message' => 'Ruangan RS berhasil diperbarui.',
+            'data' => $room->fresh(['unit', 'inpatientRoom']),
         ]);
     }
 
@@ -170,14 +182,47 @@ class RoomController extends Controller
             request: $request,
             action: 'room.status',
             module: 'master_data',
-            description: 'Status master ruangan diubah.',
+            description: 'Status master ruangan RS diubah.',
             oldValues: $oldValues,
             newValues: $room->fresh()->toArray(),
         );
 
         return response()->json([
-            'message' => 'Status ruangan berhasil diubah.',
-            'data' => $room->fresh('unit'),
+            'message' => 'Status ruangan RS berhasil diubah.',
+            'data' => $room->fresh(['unit', 'inpatientRoom']),
+        ]);
+    }
+
+    public function destroy(
+        Request $request,
+        Room $room
+    ): JsonResponse {
+        if ($room->inpatientRoom()->exists()) {
+            return response()->json([
+                'message' => 'Ruangan RS tidak dapat dihapus karena sudah terhubung ke Kamar Rawat Inap. Hapus profil Kamar Rawat Inap terlebih dahulu.',
+            ], 422);
+        }
+
+        $oldValues = $room->load('unit')->toArray();
+
+        try {
+            $room->delete();
+        } catch (QueryException $exception) {
+            return response()->json([
+                'message' => 'Ruangan RS tidak dapat dihapus karena masih digunakan oleh data lain. Nonaktifkan ruangan jika riwayatnya harus tetap dipertahankan.',
+            ], 422);
+        }
+
+        AuditLogger::log(
+            request: $request,
+            action: 'room.delete',
+            module: 'master_data',
+            description: 'Master ruangan RS dihapus.',
+            oldValues: $oldValues,
+        );
+
+        return response()->json([
+            'message' => 'Ruangan RS berhasil dihapus.',
         ]);
     }
 

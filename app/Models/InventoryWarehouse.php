@@ -4,25 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Room extends Model
+class InventoryWarehouse extends Model
 {
     protected $fillable = [
-        'unit_id',
         'code',
         'name',
-        'room_type',
-        'floor',
-        'capacity',
-        'notes',
+        'unit_id',
+        'location',
         'is_active',
+        'created_by',
+        'updated_by',
     ];
 
     protected function casts(): array
     {
         return [
-            'capacity' => 'integer',
             'is_active' => 'boolean',
         ];
     }
@@ -32,8 +30,11 @@ class Room extends Model
         return $this->belongsTo(Unit::class);
     }
 
-    public function inpatientRoom(): HasOne
+    public function stocks(): HasMany
     {
-        return $this->hasOne(InpatientRoom::class);
+        return $this->hasMany(
+            InventoryStock::class,
+            'warehouse_id'
+        );
     }
 }
