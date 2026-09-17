@@ -98,6 +98,7 @@ class BillingService
             $this->addDoctorServiceCharge($invoice, $visit, $userId);
             $this->addProcedureCharges($invoice, $visit, $userId);
             $this->addMedicineCharges($invoice, $visit, $userId);
+            $this->addLaboratoryCharges($invoice, $visit, $userId);
 
             $this->recalculate($invoice, $userId);
 
@@ -668,6 +669,65 @@ class BillingService
                 description: $row->name,
                 quantity: $quantity,
                 unitPrice: $unitPrice,
+                userId: $userId,
+            );
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | AUTO CHARGE: LABORATORY
+    |--------------------------------------------------------------------------
+    */
+
+    private function addLaboratoryCharges(
+        Invoice $invoice,
+        Visit $visit,
+        int $userId,
+    ): void {
+        if (
+            !Schema::hasTable('laboratory_orders') ||
+            !Schema::hasTable('laboratory_order_items') ||
+            !Schema::hasTable('laboratory_test_types')
+        ) {
+            return;
+        }
+
+        $rows = DB::table('laboratory_order_items as loi')
+            ->join(
+                'laboratory_orders as lo',
+                'lo.id',
+                '=',
+                'loi.laboratory_order_id',
+            )
+            ->join(
+                'laboratory_test_types as ltt',
+                'ltt.id',
+                '=',
+                'loi.test_type_id',
+            )
+            ->where('lo.visit_id', $visit->id)
+            ->where('lo.status', 'completed')
+            ->where('loi.status', 'completed')
+            ->select([
+                'loi.id',
+                'loi.price',
+                'ltt.code',
+                'ltt.name',
+            ])
+            ->get();
+
+        foreach ($rows as $row) {
+            $this->createAutoItem(
+                invoice: $invoice,
+                tariff: null,
+                category: 'laboratory',
+                sourceType: 'laboratory_order_item',
+                sourceId: $row->id,
+                code: $row->code,
+                description: $row->name,
+                quantity: 1,
+                unitPrice: (float) $row->price,
                 userId: $userId,
             );
         }

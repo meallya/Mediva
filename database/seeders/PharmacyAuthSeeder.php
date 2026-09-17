@@ -70,24 +70,61 @@ class PharmacyAuthSeeder extends Seeder
         */
 
         $permissionIds =
-            Permission::query()
-                ->whereIn(
-                    'slug',
-                    [
-                        'prescription.view',
-                        'pharmacy.dispense',
+    Permission::query()
+        ->whereIn(
+            'slug',
+            [
+                /*
+                |--------------------------------------------------------------------------
+                | PRESCRIPTION
+                |--------------------------------------------------------------------------
+                */
 
-                        'medicine.view',
-                        'medicine.create',
-                        'medicine.update',
-                        'medicine.delete',
-                        'medicine.status',
-                    ]
-                )
-                ->pluck(
-                    'id'
-                )
-                ->toArray();
+                'prescription.view',
+
+                /*
+                |--------------------------------------------------------------------------
+                | PHARMACY
+                |--------------------------------------------------------------------------
+                */
+
+                'pharmacy.dispense',
+
+                /*
+                |--------------------------------------------------------------------------
+                | MEDICINE MASTER
+                |--------------------------------------------------------------------------
+                */
+
+                'medicine.view',
+                'medicine.create',
+                'medicine.update',
+                'medicine.delete',
+                'medicine.status',
+
+                /*
+                |--------------------------------------------------------------------------
+                | PHARMACY STOCK
+                |--------------------------------------------------------------------------
+                */
+
+                'stock.view',
+                'stock.manage',
+                'stock.opname',
+
+                /*
+                |--------------------------------------------------------------------------
+                | SUPPLIER
+                |--------------------------------------------------------------------------
+                */
+
+                'supplier.manage',
+            ]
+        )
+        ->pluck(
+            'id'
+        )
+        ->toArray();
 
         $pharmacyRole
             ->permissions()

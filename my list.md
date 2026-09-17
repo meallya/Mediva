@@ -1,516 +1,477 @@
-MEDIVA — CURRENT PROGRESS
-15 SEPTEMBER 2026
+# MEDIVA — CURRENT NEXT DEVELOPMENT
 
-FOUNDATION
+Updated: 17 September 2026
 
-✅ Project Setup
-✅ React + Vite
-✅ Tailwind
-✅ React Router
-✅ Laravel
-✅ Database Connection
-✅ Authentication
-✅ Auth Context
-✅ Protected Route
-✅ Active Role
-✅ Multi-role
-✅ Role Assignment
-✅ Unit Assignment
-✅ Permission
-✅ Permission Middleware
-✅ Audit Log
-✅ Dashboard Shell
-✅ Sidebar
-✅ Dynamic Navigation
-✅ Topbar
-✅ Role Switcher
-✅ Loading Switch Role
-✅ Typography
+Keterangan:
+✅ = Sudah dibuat / complete
+🚧 = Coding sudah ada, masih runtime / integration / E2E
+⬜ = Belum dibuat
+🟡 = Optional / Phase 2
 
-🎉 FOUNDATION COMPLETE
-
-ARCHITECTURE SETUP
-
-✅ clinical-medical/
-✅ operational-hospital/
-✅ corporate-office/
-✅ README domain
-✅ Struktur module-based
-✅ Domain dipisah berdasarkan business domain
-
-🎉 ARCHITECTURE SETUP COMPLETE
-
-MASTER DATA
-
-✅ Patient
-✅ Employee
-✅ Doctor
-✅ Clinic / Poli
-✅ Medicine
-
-✅ Room
-✅ Ruangan RS
-✅ Kamar Rawat Inap
-✅ Relasi Ruangan RS → Kamar Rawat Inap
-✅ Safe Delete
-✅ Delete ditolak jika masih digunakan
-✅ Runtime Test
-
-✅ Tariff
-✅ Supplier
-✅ Payment Method
-
-🎉 MASTER DATA COMPLETION COMPLETE
-
-PATIENT
-
-✅ Database
-✅ Migration
-✅ Model
-✅ Validation
-✅ Relationship
-✅ CRUD API
-✅ Audit
-✅ Permission
-✅ Patient Service
-✅ Patient List
-✅ Search
-✅ Pagination
-✅ Create
-✅ Detail
-✅ Edit
-✅ IT View Only
-✅ Pendaftaran Create & Edit
-✅ Dokter View Only
-
-🎉 PATIENT COMPLETE
-
-REGISTRATION
-
-✅ Database
-✅ Migration
-✅ Model
-✅ Patient Relationship
-✅ Unit Relationship
-✅ Validation
-✅ Options API
-✅ List API
-✅ Create API
-✅ Detail API
-✅ Update API
-✅ Cancel API
-✅ Status API
-✅ Start Service API
-✅ Complete Service API
-✅ Search
-✅ Status Filter
-✅ Frontend
-✅ Audit
-✅ Permission
-
-🎉 REGISTRATION COMPLETE
-
-VISIT / KUNJUNGAN
-
-✅ Database
-✅ Migration
-✅ Model
-✅ Visit Number
-✅ Patient Relationship
-✅ Unit Relationship
-✅ Registration Relationship
-✅ Visit Type
-✅ Visit Status
-✅ Started At
-✅ Completed At
-✅ Cancelled At
-✅ Doctor Assignment
-✅ Payment Method
-✅ Audit Actor
-✅ SATUSEHAT Encounter ID Preparation
-
-🎉 VISIT COMPLETE
-
-QUEUE / ANTREAN
-
-✅ Database
-✅ Migration
-✅ Model
-✅ Visit Relationship
-✅ Unit Relationship
-✅ Queue Number
-✅ Service Type
-✅ Priority
-✅ Status
-✅ Call Patient
-✅ Start Service
-✅ Complete Queue
-✅ Search
-✅ Filter
-✅ Frontend
-
-🎉 QUEUE COMPLETE
-
-REGISTRATION → VISIT → QUEUE
-
-✅ Auto Create Visit
-✅ Auto Generate Visit Number
-✅ Auto Create Queue
-✅ Auto Generate Queue Number
-✅ Status Sync
-✅ Doctor Assignment
-✅ Payment Method
-✅ Audit Log
-
-🎉 FLOW COMPLETE
-
-MEDICAL EXAMINATION
-
-✅ Doctor Dashboard
-✅ Doctor Queue
-✅ Patient Detail
-✅ Visit History
-✅ Examination Database
-✅ SOAP
-✅ Vital Signs
-✅ Physical Examination
-✅ ICD-10
-✅ ICD-9-CM
-✅ Diagnosis
-✅ Procedure
-✅ Doctor Notes
-✅ Save
-✅ Edit
-✅ Detail
-✅ Complete
-✅ Lock Completed Examination
-✅ Audit Log
-✅ Permission
-
-🎉 MEDICAL EXAMINATION COMPLETE
-
-MEDICAL RECORD
-
-✅ Database
-✅ Patient Visit History
-✅ SOAP History
-✅ Diagnosis History
-✅ Procedure History
-✅ Prescription History
-✅ ICD-10 Coding
-✅ ICD-9-CM Coding
-✅ Coding History
-✅ Revision History
-✅ Append-only Medical Record
-✅ Created By
-✅ Updated By
-✅ Audit Log
-
-🎉 MEDICAL RECORD COMPLETE
-
-PRESCRIPTION
-
-✅ Database
-✅ Prescription Items
-✅ API
-✅ Service
-✅ Create from Examination
-✅ Medicine Search
-✅ Dosage
-✅ Frequency
-✅ Quantity
-✅ Instruction
-✅ Doctor Notes
-✅ Draft
-✅ Submitted
-✅ Processing
-✅ Ready
-✅ Dispensed
-✅ Cancelled
-✅ Audit Log
-✅ Permission
-
-🎉 PRESCRIPTION COMPLETE
-
-PHARMACY
-
-✅ Pharmacy Dashboard
-✅ Prescription Queue
-✅ Prescription Detail
-✅ Prescription Verification
-✅ Dispensing
-✅ Medicine Substitution
-✅ Medicine Stock
-✅ Batch
-✅ Expired Date
-✅ Stock Movement
-✅ Minimum Stock
-✅ Stock Opname
-✅ Supplier
-✅ Audit Log
-✅ Permission
-
-🎉 PHARMACY COMPLETE
-
-BILLING
-
-✅ Billing Database
-✅ Invoice
-✅ Invoice Items
-✅ Automatic Bill Generation
-✅ Registration Charge
-✅ Doctor Service
-✅ Procedure Charge
-✅ Medicine Charge
-✅ Other Service Charge
-✅ Payment Method
-✅ Payment
-✅ Payment Status
-✅ Receipt
-✅ Transaction History
-✅ Audit Log
-✅ Permission
-
-🎉 BILLING COMPLETE
-
-REPORTS
-
-✅ Management Dashboard
-✅ Visit Statistics
-✅ Revenue
-✅ Pharmacy Statistics
-✅ Management Metrics
-✅ Daily Report
-✅ Monthly Report
-✅ Filter
-✅ Charts
-✅ Export
-
-🎉 REPORTS COMPLETE
-
-GENERAL INVENTORY
-
-✅ Architecture
-✅ Migration
-✅ Backend API
-✅ Frontend
-✅ Route
-✅ Navigation
-✅ Permission
-✅ Category
-✅ Unit of Measure
-✅ Warehouse
-✅ Item Master
-✅ Current Stock
-✅ Stock Movement
-✅ Minimum Stock
-✅ Stock In
-✅ Stock Out
-✅ Unit Request
-✅ Request Approval
-✅ Distribution
-✅ Stock Opname
-✅ Supplier Integration
-✅ Unit Integration
-✅ Audit Log
-✅ Search
-✅ Filter
-✅ Pagination
-
-🚧 Runtime Testing
-
-ASSET & ALKES
-
-✅ Database / Migration
-✅ Backend API
-✅ Frontend
-✅ Navigation
-✅ Permission
-✅ Dashboard Asset
-✅ Master Asset
-✅ Kategori Asset
-✅ Asset Umum
-✅ Alat Kesehatan
-✅ Serial Number
-✅ Merk / Model
-✅ Supplier
-✅ Unit
-✅ Ruangan RS
-✅ Harga Perolehan
-✅ Tanggal Perolehan
-✅ Garansi
-✅ Kondisi
-✅ Status
-✅ Registrasi Alkes
-✅ Risk Class
-✅ Kalibrasi
-✅ Maintenance
-✅ Maintenance History
-✅ Mutasi Asset
-✅ Audit Log
-✅ UI Consistency Patch dibuat
-
-🚧 Runtime Testing
-
-PROCUREMENT / PENGADAAN
-
-✅ Database / Migration code
-✅ Backend API
-✅ Frontend
-✅ Navigation
-✅ Permission
-✅ Purchase Request
-✅ Approval
-✅ Reject
-✅ Supplier / Vendor
-✅ Quotation
-✅ Vendor Comparison
-✅ Purchase Order
-✅ Issue PO
-✅ Receiving
-✅ Inventory Integration
-✅ Asset Integration
-✅ Alkes Integration
-✅ Audit Log
-✅ UI Consistency Patch dibuat
-
-🚧 Migration Procurement
-→ sebelumnya gagal karena nama unique index terlalu panjang
-→ kode perbaikannya sudah diberikan
-
-🚧 Runtime Testing
-
-UX HARDENING
-
-⬜ Pindahkan Riwayat Medis ke Informasi Pasien
-✅ Perbesar typography seluruh clinical UI
-✅ Tingkatkan contrast teks penting
-✅ Reusable Toast Notification
-✅ Perbesar Error / Warning / Success Alert
-✅ Subtle transition / animation
-✅ Support Enter primary action
-✅ Jangan submit Enter dari textarea
-✅ Protect destructive / final actions
-✅ Optimasi loading & API response
-⬜ Skeleton loading data klinis
-✅ Pertahankan design asli MEDIVA
-✅ Pertahankan palette MEDIVA
-
-TESTING
-
-🚧 Postman
-🚧 Sanctum Testing
-🚧 API Testing
-🚧 Feature Testing
-🚧 Permission Testing
-⬜ Policy Testing
-🚧 Multi-role Testing
-🚧 End-to-End Testing
-
-EXPANSION ROADMAP
-
-✅ 1. Architecture Setup
-✅ 2. Master Data Completion
-
-🚧 3. General Inventory
-✅ Coding
-✅ Database
-✅ Backend
-✅ Frontend
-✅ Integrasi
-🚧 Runtime Testing
-
-🚧 4. Asset & Alkes
-✅ Coding
-✅ Database
-✅ Backend
-✅ Frontend
-✅ Integrasi
-✅ UI Consistency
-🚧 Runtime Testing
-
-🚧 5. Procurement
-✅ Coding
-✅ Database
-✅ Backend
-✅ Frontend
-✅ Integrasi
-✅ UI Consistency
-🚧 Runtime Testing
-
-⬜ 6. Laboratory
-⬜ Database Laboratorium
-⬜ Model Laboratorium
-⬜ Relasi Pasien
-⬜ Relasi Visit / Kunjungan
-⬜ Relasi Dokter
-⬜ Relasi Unit
-⬜ Master Jenis Pemeriksaan
-⬜ Parameter Pemeriksaan
-⬜ Nilai Rujukan
-⬜ Jenis Sampel
-⬜ Permintaan Pemeriksaan
-⬜ Nomor Laboratorium Otomatis
-⬜ Pengambilan Sampel
-⬜ Status Sampel
-⬜ Proses Pemeriksaan
-⬜ Input Hasil
-⬜ Flag Hasil Abnormal
-⬜ Verifikasi Hasil
-⬜ Riwayat Hasil
-⬜ Integrasi Medical Record
-⬜ Integrasi Billing
-⬜ Audit Log
-⬜ Permission
-⬜ Search
-⬜ Filter
-⬜ Pagination
-⬜ Dashboard Laboratorium
-⬜ Frontend
-⬜ Backend API
-⬜ Runtime Testing
-
-⬜ 7. Operating Room
-⬜ 8. HR / SDM
-⬜ 9. Customer Service
-⬜ 10. Legal
-⬜ 11. Diklat & Event
-⬜ 12. Media / Marketing
-⬜ 13. MFK
-
+==================================================
 CLINICAL / MEDICAL
+==================================================
+
+✅ Medical Examination
+✅ Medical Record
+✅ Laboratory
+✅ Operating Room
+
+🚧 Keperawatan
+✅ Coding
+🚧 Runtime / E2E
+
+🚧 Apoteker / Clinical Pharmacy
+✅ Database
+✅ Backend
+✅ Frontend
+✅ Permission
+✅ Role Apoteker
+✅ Test User Apoteker
+🚧 Runtime
+🚧 Integration Pharmacy
+🚧 Medical Record Integration
+🚧 E2E
+
+🚧 Radiologi
+✅ Database
+✅ Backend
+✅ Frontend
+✅ Permission
+✅ Role Radiologi
+✅ Master Modality
+✅ Order
+✅ Scheduling
+✅ Study
+✅ Result
+✅ Verification
+✅ Amendment
+✅ PACS / DICOM Preparation
+✅ Test User Radiologi
+🚧 Runtime
+🚧 Billing Integration
+🚧 Medical Record Integration
+🚧 E2E
+
+🚧 IGD
+✅ Coding
+✅ Database
+✅ Frontend
+✅ Backend
+✅ Nursing Integration
+✅ Test User Perawat IGD
+🚧 Runtime
+🚧 Final Integration
+🚧 E2E
+
+🚧 Rawat Jalan
+✅ Coding
+✅ Database
+✅ Frontend
+✅ Backend
+✅ Nursing Integration
+✅ Test User Perawat Rawat Jalan
+🚧 Runtime
+🚧 Final Integration
+🚧 E2E
+
+🚧 Rawat Inap
+✅ Coding
+✅ Database
+✅ Frontend
+✅ Backend
+✅ Nursing Integration
+✅ Test User Perawat Rawat Inap
+🚧 Runtime
+🚧 Final Integration
+🚧 E2E
+
+==================================================
+TEST USERS
+==================================================
+
+✅ ClinicalTestUserSeeder
+
+✅ dokter@mediva.test
+✅ perawat@mediva.test
+✅ perawat.igd@mediva.test
+✅ perawat.rajal@mediva.test
+✅ perawat.ranap@mediva.test
+✅ perawat.ok@mediva.test
+✅ apoteker@mediva.test
+✅ laboratorium@mediva.test
+✅ radiologi@mediva.test
+✅ farmasi@mediva.test
+✅ rekammedis@mediva.test
+✅ pendaftaran@mediva.test
+✅ kasir@mediva.test
+
+✅ nurse.multi@mediva.test
+✅ doctor.multi@mediva.test
+
+Password TEST:
+MedivaTest123!
+
+NOTE:
+Ini akun TEST / DEVELOPMENT.
+Bukan final real user MEDIVA.
+
+⬜ Final User
+⬜ Final Unit Assignment
+⬜ Final Permission Matrix
+⬜ Final Multi-role Assignment
+
+==================================================
+NEXT — CLINICAL RUNTIME
+==================================================
+
+1. 🚀 Runtime Apoteker
+
+    Login:
+    apoteker@mediva.test
+
+    Test:
+    ⬜ Dashboard
+    ⬜ Review Resep
+    ⬜ Allergy Review
+    ⬜ Drug Interaction Review
+    ⬜ Duplicate Therapy
+    ⬜ Dose Review
+    ⬜ Pharmacist Intervention
+    ⬜ Medication Reconciliation
+    ⬜ Counseling
+    ⬜ Therapy Monitoring
+    ⬜ Pharmaceutical Care
+    ⬜ Permission
+    ⬜ Pharmacy Integration
+    ⬜ Medical Record Integration
+    ⬜ E2E
+
+2. 🚀 Runtime Radiologi
+
+    Login:
+    radiologi@mediva.test
+
+    Test:
+    ⬜ Dashboard
+    ⬜ Master Modality
+    ⬜ Master Pemeriksaan
+    ⬜ Order Radiologi
+    ⬜ Schedule
+    ⬜ Study
+    ⬜ Radiographer
+    ⬜ Radiologist
+    ⬜ Contrast
+    ⬜ Result
+    ⬜ Verification
+    ⬜ Amendment
+    ⬜ Attachment / PACS Reference
+    ⬜ Billing Integration
+    ⬜ Medical Record Integration
+    ⬜ Permission
+    ⬜ E2E
+
+3. 🚀 Runtime IGD
+
+    Login:
+    perawat.igd@mediva.test
+
+    Test:
+    ⬜ Encounter
+    ⬜ Triage
+    ⬜ Nursing
+    ⬜ Doctor
+    ⬜ Observation
+    ⬜ Lab
+    ⬜ Radiologi
+    ⬜ Pharmacy
+    ⬜ Operating Room
+    ⬜ Disposition
+    ⬜ Admit Rawat Inap
+    ⬜ E2E
+
+4. 🚀 Runtime Rawat Jalan
+
+    Login:
+    perawat.rajal@mediva.test
+
+    Test:
+    ⬜ Check-In
+    ⬜ Queue
+    ⬜ Nursing
+    ⬜ Doctor
+    ⬜ Laboratory
+    ⬜ Radiology
+    ⬜ Prescription
+    ⬜ Apoteker
+    ⬜ Pharmacy
+    ⬜ Billing
+    ⬜ Follow-Up
+    ⬜ Referral
+    ⬜ Disposition
+    ⬜ E2E
+
+5. 🚀 Runtime Rawat Inap
+
+    Login:
+    perawat.ranap@mediva.test
+
+    Test:
+    ⬜ Admission
+    ⬜ Bed Assignment
+    ⬜ DPJP
+    ⬜ Nursing
+    ⬜ Daily Care
+    ⬜ Laboratory
+    ⬜ Radiology
+    ⬜ Prescription
+    ⬜ Apoteker
+    ⬜ Pharmacy
+    ⬜ Operating Room
+    ⬜ Billing
+    ⬜ Discharge Planning
+    ⬜ Discharge
+    ⬜ E2E
+
+==================================================
+MULTI ROLE TESTING
+==================================================
+
+⬜ Login nurse.multi@mediva.test
+
+⬜ Role Switcher
+⬜ Perawat
+⬜ Perawat Rawat Inap
+
+⬜ Sidebar berubah sesuai role
+⬜ Permission berubah sesuai role
+⬜ Dashboard berubah sesuai role
+
+⬜ Login doctor.multi@mediva.test
+
+⬜ Dokter
+⬜ Management jika role tersedia
+
+⬜ Role Switcher
+⬜ Active Role
+⬜ Permission
+⬜ Navigation
+
+==================================================
+FULL CLINICAL E2E
+==================================================
+
+⬜ Pasien
+
+↓
+
+⬜ Pendaftaran
+
+↓
+
+⬜ Visit
+
+↓
+
+⬜ Queue
+
+↓
+
+⬜ IGD / Rawat Jalan / Rawat Inap
+
+↓
 
 ⬜ Keperawatan
+
+↓
+
+⬜ Dokter
+
+↓
+
+⬜ Laboratory / Radiology
+
+↓
+
+⬜ Prescription
+
+↓
+
 ⬜ Apoteker
-⬜ Laboratorium
-⬜ Radiologi
-⬜ Operasi / Operating Room
-⬜ IGD
-⬜ Rawat Jalan
-⬜ Rawat Inap
+
+↓
+
+⬜ Pharmacy
+
+↓
+
+⬜ Operating Room jika dibutuhkan
+
+↓
+
+⬜ Billing
+
+↓
+
+⬜ Medical Record
+
+↓
+
+⬜ Discharge / Pulang
+
+==================================================
+SETELAH CLINICAL HIJAU
+==================================================
 
 OPERATIONAL HOSPITAL
 
 🚧 General Inventory
+→ Runtime
+
 🚧 Asset & Alkes
-🚧 Procurement / Pengadaan
-⬜ Gudang
-⬜ MFK
+→ Runtime
+
+🚧 Procurement
+→ Migration Final Check
+→ Runtime
+
+🚧 MFK
+→ Runtime / E2E
+
+MODUL BARU:
+
 ⬜ Maintenance
-⬜ Housekeeping / Kebersihan
-⬜ Asset Management lanjutan
+⬜ Housekeeping
 ⬜ Security
-⬜ Vendor / Supplier lanjutan
+
+==================================================
+SETELAH OPERATIONAL
+==================================================
 
 CORPORATE / OFFICE
 
-⬜ HR / SDM
+✅ HR / SDM
+✅ Customer Service
+✅ Legal
+✅ Diklat & Event
+
+🚧 Media / Marketing
+→ Runtime / E2E
+
 ⬜ Finance
-⬜ Legal
-⬜ Customer Service
-⬜ Marketing
-⬜ Media / Content
-⬜ Diklat & Event
 ⬜ IT
-⬜ Manajemen
-⬜ Administrasi
+
+==================================================
+MANAGEMENT
+==================================================
+
+✅ Management Dashboard Basic
+
+⬜ Executive Dashboard V2
+
+⬜ Clinical KPI
+⬜ Operational KPI
+⬜ Finance KPI
+⬜ HR KPI
+⬜ Inventory KPI
+⬜ Procurement KPI
+⬜ Patient Service KPI
+⬜ Cross Module Analytics
+⬜ Executive Alert
+
+==================================================
+OPTIONAL / PHASE 2
+==================================================
+
+🟡 Administrasi
+
+🟡 Gudang Workspace
+→ General Inventory
+
+🟡 Asset Management Advanced
+→ Asset & Alkes Phase 2
+
+🟡 Vendor Management Advanced
+→ Procurement Phase 2
+
+🟡 PACS / DICOM Direct Integration
+
+🟡 Automated Drug Interaction Database
+
+==================================================
+FINAL MEDIVA PHASE
+==================================================
+
+⬜ Review Semua Role
+
+⬜ Final Permission Matrix
+
+⬜ Final Unit Assignment
+
+⬜ Final Multi-role Assignment
+
+⬜ Buat Final Employee
+
+⬜ Buat Final User
+
+⬜ Hapus / nonaktifkan akun testing jika production
+
+⬜ Security Hardening
+
+⬜ Full Permission Testing
+
+⬜ Full API Testing
+
+⬜ Full Feature Testing
+
+⬜ Full E2E Testing
+
+⬜ Production Preparation
+
+==================================================
+URUTAN KITA SEKARANG
+==================================================
+
+1. 🚀 Runtime Apoteker ← SEKARANG
+
+2. Runtime Radiologi
+
+3. Runtime + E2E IGD
+
+4. Runtime + E2E Rawat Jalan
+
+5. Runtime + E2E Rawat Inap
+
+6. Multi-role Testing
+
+7. Full Clinical E2E
+
+8. Runtime General Inventory
+
+9. Runtime Asset & Alkes
+
+10. Runtime Procurement
+
+11. Runtime MFK
+
+12. Maintenance
+
+13. Housekeeping
+
+14. Security
+
+15. Media / Marketing Runtime
+
+16. Finance
+
+17. IT
+
+18. Executive Dashboard V2
+
+19. Final Role + Permission Matrix
+
+20. Final User Creation
+
+21. FULL MEDIVA END-TO-END TESTING
+
+22. PRODUCTION PREPARATION

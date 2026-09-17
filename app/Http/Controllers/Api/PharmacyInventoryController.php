@@ -24,24 +24,125 @@ class PharmacyInventoryController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function stocks(
-        Request $request
-    ): JsonResponse {
-        $search =
-            trim(
-                (string) $request->query(
-                    'search',
-                    ''
-                )
-            );
+public function stocks(
+    Request $request
+): JsonResponse {
+    $search =
+        trim(
+            (string) $request->query(
+                'search',
+                ''
+            )
+        );
 
-        $medicines =
-            Medicine::query()
-                ->when(
-                    $search !== '',
-                    function ($query) use ($search) {
-                        $query->where(
-                            function ($subQuery) use ($search) {
+    $perPage =
+        min(
+            max(
+                (int) $request->query(
+                    'per_page',
+                    20
+                ),
+                5
+            ),
+            100
+        );
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEDICINE STOCK QUERY
+    |--------------------------------------------------------------------------
+    |
+    | Stok obat berada di medicine_batches.
+    |
+    | current_selling_price mengambil harga jual dari batch aktif
+    | yang masih mempunyai stok dan belum expired.
+    |
+    | Urutan menggunakan FEFO:
+    | batch dengan tanggal expired terdekat diprioritaskan.
+    |
+    */
+
+    $medicines =
+        Medicine::query()
+
+            /*
+            |--------------------------------------------------------------------------
+            | CURRENT SELLING PRICE
+            |--------------------------------------------------------------------------
+            */
+
+            ->addSelect([
+                'current_selling_price' =>
+                    MedicineBatch::query()
+                        ->select(
+                            'selling_price'
+                        )
+                        ->whereColumn(
+                            'medicine_id',
+                            'medicines.id'
+                        )
+                        ->where(
+                            'is_active',
+                            true
+                        )
+                        ->where(
+                            'stock',
+                            '>',
+                            0
+                        )
+                        ->where(
+                            function (
+                                $query
+                            ) {
+                                $query
+                                    ->whereNull(
+                                        'expired_at'
+                                    )
+                                    ->orWhereDate(
+                                        'expired_at',
+                                        '>=',
+                                        today()
+                                    );
+                            }
+                        )
+                        ->orderByRaw(
+                            '
+                            CASE
+                                WHEN expired_at IS NULL
+                                THEN 1
+                                ELSE 0
+                            END
+                            '
+                        )
+                        ->orderBy(
+                            'expired_at'
+                        )
+                        ->orderBy(
+                            'id'
+                        )
+                        ->limit(1),
+            ])
+
+            /*
+            |--------------------------------------------------------------------------
+            | SEARCH
+            |--------------------------------------------------------------------------
+            */
+
+            ->when(
+                $search !== '',
+                function (
+                    $query
+                ) use (
+                    $search
+                ) {
+                    $query
+                        ->where(
+                            function (
+                                $subQuery
+                            ) use (
+                                $search
+                            ) {
                                 $subQuery
                                     ->where(
                                         'code',
@@ -60,84 +161,150 @@ class PharmacyInventoryController extends Controller
                                     );
                             }
                         );
-                    }
-                )
-                ->withSum(
-                    [
-                        'batches as total_stock' =>
-                            function ($query) {
-                                $query->where(
+                }
+            )
+
+            /*
+            |--------------------------------------------------------------------------
+            | TOTAL STOCK
+            |--------------------------------------------------------------------------
+            */
+
+            ->withSum(
+                [
+                    'batches as total_stock' =>
+                        function (
+                            $query
+                        ) {
+                            $query
+                                ->where(
                                     'is_active',
                                     true
                                 );
-                            },
-                    ],
-                    'stock'
-                )
-                ->withSum(
-                    [
-                        'batches as usable_stock' =>
-                            function ($query) {
-                                $query
-                                    ->where(
-                                        'is_active',
-                                        true
-                                    )
-                                    ->where(
-                                        function ($subQuery) {
-                                            $subQuery
-                                                ->whereNull(
-                                                    'expired_at'
-                                                )
-                                                ->orWhereDate(
-                                                    'expired_at',
-                                                    '>=',
-                                                    today()
-                                                );
-                                        }
-                                    );
-                            },
-                    ],
-                    'stock'
-                )
-                ->orderBy('name')
-                ->paginate(
-                    min(
-                        (int) $request->query(
-                            'per_page',
-                            20
-                        ),
-                        100
-                    )
-                );
+                        },
+                ],
+                'stock'
+            )
 
-        $medicines
-            ->getCollection()
-            ->transform(
-                function ($medicine) {
-                    $usable =
-                        (float) (
-                            $medicine->usable_stock
-                            ?? 0
-                        );
+            /*
+            |--------------------------------------------------------------------------
+            | USABLE STOCK
+            |--------------------------------------------------------------------------
+            |
+            | Hanya menghitung:
+            |
+            | - batch aktif
+            | - belum expired
+            |
+            */
 
-                    $minimum =
-                        (float) (
-                            $medicine->minimum_stock
-                            ?? 0
-                        );
+            ->withSum(
+                [
+                    'batches as usable_stock' =>
+                        function (
+                            $query
+                        ) {
+                            $query
+                                ->where(
+                                    'is_active',
+                                    true
+                                )
+                                ->where(
+                                    function (
+                                        $subQuery
+                                    ) {
+                                        $subQuery
+                                            ->whereNull(
+                                                'expired_at'
+                                            )
+                                            ->orWhereDate(
+                                                'expired_at',
+                                                '>=',
+                                                today()
+                                            );
+                                    }
+                                );
+                        },
+                ],
+                'stock'
+            )
 
-                    $medicine->is_low_stock =
-                        $usable <= $minimum;
+            /*
+            |--------------------------------------------------------------------------
+            | RESULT
+            |--------------------------------------------------------------------------
+            */
 
-                    return $medicine;
-                }
-            );
+            ->orderBy(
+                'name'
+            )
+            ->paginate(
+                $perPage
+            )
+            ->withQueryString();
 
-        return response()->json(
-            $medicines
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADD STATUS INFORMATION
+    |--------------------------------------------------------------------------
+    */
+
+    $medicines
+        ->getCollection()
+        ->transform(
+            function (
+                $medicine
+            ) {
+                $usable =
+                    (float) (
+                        $medicine
+                            ->usable_stock
+                        ?? 0
+                    );
+
+                $minimum =
+                    (float) (
+                        $medicine
+                            ->minimum_stock
+                        ?? 0
+                    );
+
+                /*
+                 * Kalau minimum = 0,
+                 * obat baru dianggap minimum
+                 * kalau stok benar-benar habis.
+                 */
+                $medicine
+                    ->is_low_stock =
+                    $minimum > 0
+                        ? $usable <=
+                            $minimum
+                        : $usable <= 0;
+
+                /*
+                 * Normalize supaya frontend
+                 * menerima number/null.
+                 */
+                $medicine
+                    ->current_selling_price =
+                    $medicine
+                        ->current_selling_price !==
+                    null
+                        ? (float)
+                            $medicine
+                                ->current_selling_price
+                        : null;
+
+                return $medicine;
+            }
         );
-    }
+
+
+    return response()->json(
+        $medicines
+    );
+}
 
     /*
     |--------------------------------------------------------------------------

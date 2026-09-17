@@ -206,4 +206,18 @@ class Visit extends Model
             invoice::class
         );
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | LABORATORY
+    |--------------------------------------------------------------------------
+    */
+
+    public function laboratoryOrders(): HasMany
+    {
+        return $this->hasMany(
+            LaboratoryOrder::class
+        );
+    }
+
 }

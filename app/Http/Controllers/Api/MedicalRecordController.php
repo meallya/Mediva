@@ -38,6 +38,9 @@ class MedicalRecordController extends Controller
                 ->with([
                     'visit.registration',
                     'visit.prescription.items.medicine',
+                    'visit.laboratoryOrders.items.testType',
+                    'visit.laboratoryOrders.items.results.parameter',
+                    'visit.laboratoryOrders.specimens.sampleType',
                     'unit',
                     'doctor.employee',
                     'revisions.creator',
@@ -63,6 +66,10 @@ class MedicalRecordController extends Controller
 
                     $prescription =
                         $visit?->prescription;
+
+                    $laboratoryOrders =
+                        $visit?->laboratoryOrders
+                        ?? collect();
 
                     $clinical =
                         $record
@@ -486,6 +493,50 @@ class MedicalRecordController extends Controller
                                             ->values(),
                                 ]
                                 : null,
+
+                        /*
+                        |------------------------------------------------------
+                        | LABORATORY
+                        |------------------------------------------------------
+                        */
+
+                        'laboratory' =>
+                            $laboratoryOrders
+                                ->map(
+                                    fn ($order) => [
+                                        'id' => $order->id,
+                                        'lab_number' => $order->lab_number,
+                                        'status' => $order->status,
+                                        'ordered_at' => $order->ordered_at,
+                                        'verified_at' => $order->verified_at,
+                                        'items' => $order->items
+                                            ->map(
+                                                fn ($item) => [
+                                                    'id' => $item->id,
+                                                    'status' => $item->status,
+                                                    'code' => $item->testType?->code,
+                                                    'name' => $item->testType?->name,
+                                                    'results' => $item->results
+                                                        ->map(
+                                                            fn ($result) => [
+                                                                'id' => $result->id,
+                                                                'parameter' => $result->parameter?->name,
+                                                                'value' => $result->value,
+                                                                'unit' => $result->unit,
+                                                                'reference_low' => $result->reference_low,
+                                                                'reference_high' => $result->reference_high,
+                                                                'reference_text' => $result->reference_text,
+                                                                'flag' => $result->flag,
+                                                                'verified_at' => $result->verified_at,
+                                                            ]
+                                                        )
+                                                        ->values(),
+                                                ]
+                                            )
+                                            ->values(),
+                                    ]
+                                )
+                                ->values(),
                     ];
                 }
             );
@@ -717,6 +768,9 @@ class MedicalRecordController extends Controller
             'visit.registration',
 
             'visit.prescription.items.medicine',
+            'visit.laboratoryOrders.items.testType',
+            'visit.laboratoryOrders.items.results.parameter',
+            'visit.laboratoryOrders.specimens.sampleType',
 
             'unit',
 

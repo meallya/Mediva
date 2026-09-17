@@ -71,4 +71,12 @@ class Patient extends Model
             Invoice::class
         );
     }
+
+    public function laboratoryOrders(): HasMany
+    {
+        return $this->hasMany(
+            LaboratoryOrder::class
+        );
+    }
+
 }

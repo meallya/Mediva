@@ -20,6 +20,8 @@ import {
     faChartColumn,
     faLaptopMedical,
     faCartShopping,
+    faFlask,
+    faBedPulse,
 } from "@fortawesome/free-solid-svg-icons";
 
 /*
@@ -54,7 +56,6 @@ const navigation = [
 
         available: true,
     },
-
 
     /*
     |--------------------------------------------------------------------------
@@ -110,6 +111,30 @@ const navigation = [
         permissions: [],
 
         children: [
+            {
+                label: "Laboratorium",
+                path: "/laboratory",
+                icon: faFlask,
+                permissions: ["laboratory.view"],
+                available: true,
+            },
+
+            {
+                label: "Rawat Inap",
+                path: "/inpatient",
+                icon: faBedPulse,
+                permissions: ["inpatient.view"],
+                available: true,
+            },
+
+            {
+                label: "Kamar Operasi",
+                path: "/clinical/operating-room",
+                icon: faBedPulse,
+                permissions: ["operating_room.view"],
+                available: true,
+            },
+
             {
                 label: "Stok Obat",
                 path: "/pharmacy/inventory",

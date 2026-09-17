@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             GeneralInventoryPermissionSeeder::class,
             OperationalHospitalPermissionSeeder::class,
+            LaboratoryPermissionSeeder::class,
+            LaboratoryMasterSeeder::class,
         ]);
     }
 }

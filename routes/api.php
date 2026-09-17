@@ -22,8 +22,11 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\TariffController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\GeneralInventoryController;
+use App\Http\Controllers\Api\LaboratoryController;
 use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\ProcurementController;
+use App\Http\Controllers\Api\OperatingRoomController;
+use App\Http\Controllers\Api\OperatingRoomMasterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -1390,6 +1393,74 @@ Route::patch('/procurement/orders/{purchaseOrder}/issue',[ProcurementController:
 Route::post('/procurement/orders/{purchaseOrder}/receive',[ProcurementController::class,'receive'])->middleware('permission:procurement.receive');
 Route::get('/procurement/receipts',[ProcurementController::class,'receipts'])->middleware('permission:procurement.view');
 
+
+/*
+|--------------------------------------------------------------------------
+| LABORATORIUM
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/laboratory/dashboard', [LaboratoryController::class, 'dashboard'])
+    ->middleware('permission:laboratory.view');
+Route::get('/laboratory/options', [LaboratoryController::class, 'options'])
+    ->middleware('permission:laboratory.view');
+
+Route::get('/laboratory/sample-types', [LaboratoryController::class, 'sampleTypes'])
+    ->middleware('permission:laboratory.view');
+Route::post('/laboratory/sample-types', [LaboratoryController::class, 'storeSampleType'])
+    ->middleware('permission:laboratory.master');
+Route::put('/laboratory/sample-types/{laboratorySampleType}', [LaboratoryController::class, 'updateSampleType'])
+    ->middleware('permission:laboratory.master');
+
+Route::get('/laboratory/test-types', [LaboratoryController::class, 'testTypes'])
+    ->middleware('permission:laboratory.view');
+Route::post('/laboratory/test-types', [LaboratoryController::class, 'storeTestType'])
+    ->middleware('permission:laboratory.master');
+Route::put('/laboratory/test-types/{laboratoryTestType}', [LaboratoryController::class, 'updateTestType'])
+    ->middleware('permission:laboratory.master');
+Route::patch('/laboratory/test-types/{laboratoryTestType}/status', [LaboratoryController::class, 'toggleTestType'])
+    ->middleware('permission:laboratory.master');
+
+Route::get('/laboratory/test-types/{laboratoryTestType}/parameters', [LaboratoryController::class, 'parameters'])
+    ->middleware('permission:laboratory.view');
+Route::post('/laboratory/test-types/{laboratoryTestType}/parameters', [LaboratoryController::class, 'storeParameter'])
+    ->middleware('permission:laboratory.master');
+Route::put('/laboratory/parameters/{laboratoryParameter}', [LaboratoryController::class, 'updateParameter'])
+    ->middleware('permission:laboratory.master');
+Route::get('/laboratory/parameters/{laboratoryParameter}/reference-ranges', [LaboratoryController::class, 'referenceRanges'])
+    ->middleware('permission:laboratory.view');
+Route::post('/laboratory/parameters/{laboratoryParameter}/reference-ranges', [LaboratoryController::class, 'storeReferenceRange'])
+    ->middleware('permission:laboratory.master');
+Route::put('/laboratory/reference-ranges/{laboratoryReferenceRange}', [LaboratoryController::class, 'updateReferenceRange'])
+    ->middleware('permission:laboratory.master');
+
+Route::get('/laboratory/orders', [LaboratoryController::class, 'orders'])
+    ->middleware('permission:laboratory.view');
+Route::post('/laboratory/orders', [LaboratoryController::class, 'storeOrder'])
+    ->middleware('permission:laboratory.create');
+Route::get('/laboratory/orders/{laboratoryOrder}', [LaboratoryController::class, 'showOrder'])
+    ->middleware('permission:laboratory.view');
+Route::patch('/laboratory/orders/{laboratoryOrder}/submit', [LaboratoryController::class, 'submitOrder'])
+    ->middleware('permission:laboratory.create');
+Route::patch('/laboratory/orders/{laboratoryOrder}/cancel', [LaboratoryController::class, 'cancel'])
+    ->middleware('permission:laboratory.cancel');
+
+Route::post('/laboratory/orders/{laboratoryOrder}/collect-samples', [LaboratoryController::class, 'collectSamples'])
+    ->middleware('permission:laboratory.collect_sample');
+Route::post('/laboratory/orders/{laboratoryOrder}/receive-samples', [LaboratoryController::class, 'receiveSamples'])
+    ->middleware('permission:laboratory.collect_sample');
+Route::patch('/laboratory/specimens/{laboratorySpecimen}/reject', [LaboratoryController::class, 'rejectSpecimen'])
+    ->middleware('permission:laboratory.collect_sample');
+
+Route::post('/laboratory/orders/{laboratoryOrder}/start-processing', [LaboratoryController::class, 'startProcessing'])
+    ->middleware('permission:laboratory.process');
+Route::post('/laboratory/order-items/{laboratoryOrderItem}/results', [LaboratoryController::class, 'saveResults'])
+    ->middleware('permission:laboratory.result');
+Route::post('/laboratory/orders/{laboratoryOrder}/submit-verification', [LaboratoryController::class, 'submitForVerification'])
+    ->middleware('permission:laboratory.result');
+Route::post('/laboratory/orders/{laboratoryOrder}/verify', [LaboratoryController::class, 'verify'])
+    ->middleware('permission:laboratory.verify');
+
 /* BILLING LIST + SUMMARY */
 
 Route::get(
@@ -1515,5 +1586,299 @@ Route::get(
     '/reports/export',
     [ReportController::class, 'export']
 )->middleware('permission:report.export');
+
+/*
+|--------------------------------------------------------------------------
+| OPERATING ROOM / KAMAR OPERASI
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('operating-room')->group(function () {
+
+    Route::get(
+        '/dashboard',
+        [
+            OperatingRoomController::class,
+            'dashboard',
+        ]
+    )->middleware(
+        'permission:operating_room.view'
+    );
+
+    Route::get(
+        '/options',
+        [
+            OperatingRoomController::class,
+            'options',
+        ]
+    )->middleware(
+        'permission:operating_room.view'
+    );
+
+    Route::get(
+    '/patients/search',
+    [OperatingRoomController::class, 'searchPatients']
+);
+
+Route::get(
+    '/patients/{patient}/visits',
+    [OperatingRoomController::class, 'patientVisits']
+);
+
+    /*
+    |--------------------------------------------------------------------------
+    | MASTER JENIS OPERASI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/operation-types',
+        [
+            OperatingRoomMasterController::class,
+            'operationTypes',
+        ]
+    )->middleware(
+        'permission:operating_room.master.manage'
+    );
+
+    Route::post(
+        '/operation-types',
+        [
+            OperatingRoomMasterController::class,
+            'storeOperationType',
+        ]
+    )->middleware(
+        'permission:operating_room.master.manage'
+    );
+
+    Route::put(
+        '/operation-types/{operationType}',
+        [
+            OperatingRoomMasterController::class,
+            'updateOperationType',
+        ]
+    )->middleware(
+        'permission:operating_room.master.manage'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | MASTER KAMAR OPERASI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/rooms',
+        [
+            OperatingRoomMasterController::class,
+            'rooms',
+        ]
+    )->middleware(
+        'permission:operating_room.master.manage'
+    );
+
+    Route::post(
+        '/rooms',
+        [
+            OperatingRoomMasterController::class,
+            'storeRoom',
+        ]
+    )->middleware(
+        'permission:operating_room.master.manage'
+    );
+
+    Route::put(
+        '/rooms/{operatingRoom}',
+        [
+            OperatingRoomMasterController::class,
+            'updateRoom',
+        ]
+    )->middleware(
+        'permission:operating_room.master.manage'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | OPERASI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/surgeries',
+        [
+            OperatingRoomController::class,
+            'index',
+        ]
+    )->middleware(
+        'permission:operating_room.view'
+    );
+
+    Route::post(
+        '/surgeries',
+        [
+            OperatingRoomController::class,
+            'store',
+        ]
+    )->middleware(
+        'permission:operating_room.create'
+    );
+
+    Route::get(
+        '/surgeries/{surgery}',
+        [
+            OperatingRoomController::class,
+            'show',
+        ]
+    )->middleware(
+        'permission:operating_room.view'
+    );
+
+    Route::put(
+        '/surgeries/{surgery}',
+        [
+            OperatingRoomController::class,
+            'update',
+        ]
+    )->middleware(
+        'permission:operating_room.update'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | SCHEDULE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::patch(
+        '/surgeries/{surgery}/schedule',
+        [
+            OperatingRoomController::class,
+            'schedule',
+        ]
+    )->middleware(
+        'permission:operating_room.schedule'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | TEAM OPERASI
+    |--------------------------------------------------------------------------
+    */
+
+    Route::put(
+        '/surgeries/{surgery}/team',
+        [
+            OperatingRoomController::class,
+            'team',
+        ]
+    )->middleware(
+        'permission:operating_room.team.manage'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | SAFETY CHECKLIST
+    |--------------------------------------------------------------------------
+    */
+
+    Route::put(
+        '/surgeries/{surgery}/checklist/{phase}',
+        [
+            OperatingRoomController::class,
+            'checklist',
+        ]
+    )
+        ->whereIn(
+            'phase',
+            [
+                'preoperative',
+                'sign-in',
+                'time-out',
+                'sign-out',
+            ]
+        )
+        ->middleware(
+            'permission:operating_room.checklist'
+        );
+
+    /*
+    |--------------------------------------------------------------------------
+    | OPERATING PROCESS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/surgeries/{surgery}/start',
+        [
+            OperatingRoomController::class,
+            'start',
+        ]
+    )->middleware(
+        'permission:operating_room.start'
+    );
+
+    Route::post(
+        '/surgeries/{surgery}/finish',
+        [
+            OperatingRoomController::class,
+            'finish',
+        ]
+    )->middleware(
+        'permission:operating_room.complete'
+    );
+
+    Route::post(
+        '/surgeries/{surgery}/complete',
+        [
+            OperatingRoomController::class,
+            'complete',
+        ]
+    )->middleware(
+        'permission:operating_room.complete'
+    );
+
+    Route::post(
+        '/surgeries/{surgery}/cancel',
+        [
+            OperatingRoomController::class,
+            'cancel',
+        ]
+    )->middleware(
+        'permission:operating_room.cancel'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEDICINE / MATERIAL / ASSET USAGE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/surgeries/{surgery}/usages',
+        [
+            OperatingRoomController::class,
+            'addUsage',
+        ]
+    )->middleware(
+        'permission:operating_room.usage'
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECOVERY
+    |--------------------------------------------------------------------------
+    */
+
+    Route::put(
+        '/surgeries/{surgery}/recovery',
+        [
+            OperatingRoomController::class,
+            'recovery',
+        ]
+    )->middleware(
+        'permission:operating_room.recovery'
+    );
+
+});
 
 });

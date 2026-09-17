@@ -9,6 +9,7 @@ import {
     faCapsules,
     faClipboardList,
     faFileMedical,
+    faFlask,
     faHeartPulse,
     faPrescriptionBottleMedical,
     faStethoscope,
@@ -368,6 +369,10 @@ function VisitCard({ visit }) {
     const examination = visit?.examination ?? null;
 
     const prescription = visit?.prescription ?? null;
+
+    const laboratory = Array.isArray(visit?.laboratory)
+        ? visit.laboratory
+        : [];
 
     const medicalRecord = visit?.medical_record ?? null;
 
@@ -752,6 +757,118 @@ function VisitCard({ visit }) {
                         <p className="mt-[5px] whitespace-pre-line text-[10px] leading-[1.6] text-[#626262]">
                             {prescription.doctor_notes}
                         </p>
+                    </div>
+                )}
+            </div>
+
+            {/* =============================================================
+                LABORATORY
+            ============================================================== */}
+
+            <div className="border-b border-[#eeeeee] px-[20px] py-[18px]">
+                <div className="mb-[12px] flex flex-wrap items-start justify-between gap-[10px]">
+                    <div>
+                        <div className="flex items-center gap-[8px]">
+                            <FontAwesomeIcon
+                                icon={faFlask}
+                                className="text-[12px] text-[#047AF7]"
+                            />
+
+                            <h3 className="text-[13px] font-semibold text-[#212121]">
+                                Hasil Laboratorium
+                            </h3>
+                        </div>
+
+                        <p className="mt-[3px] text-[10px] text-[#B4B4B4]">
+                            Hasil laboratorium pada kunjungan ini
+                        </p>
+                    </div>
+                </div>
+
+                {laboratory.length === 0 ? (
+                    <EmptyText>Tidak ada hasil laboratorium pada kunjungan ini.</EmptyText>
+                ) : (
+                    <div className="space-y-[10px]">
+                        {laboratory.map((order) => (
+                            <div
+                                key={order.id}
+                                className="rounded-[10px] border border-[#eeeeee] bg-[#fafbfc] p-[12px]"
+                            >
+                                <div className="flex flex-wrap items-center justify-between gap-[8px]">
+                                    <div>
+                                        <p className="text-[11px] font-semibold text-[#212121]">
+                                            {order.lab_number || "-"}
+                                        </p>
+                                        <p className="mt-[2px] text-[9px] text-[#999999]">
+                                            {formatDateTime(order.verified_at ?? order.ordered_at)}
+                                        </p>
+                                    </div>
+
+                                    <span className="rounded-full bg-[#CDE8E5]/40 px-[8px] py-[4px] text-[9px] font-medium text-[#527b7b]">
+                                        {order.status === "completed" ? "Selesai" : order.status}
+                                    </span>
+                                </div>
+
+                                <div className="mt-[10px] space-y-[8px]">
+                                    {(order.items ?? []).map((item) => (
+                                        <div key={item.id} className="rounded-[9px] bg-white p-[10px]">
+                                            <p className="text-[10px] font-semibold text-[#212121]">
+                                                {item.code ? `${item.code} — ` : ""}{item.name || "Pemeriksaan"}
+                                            </p>
+
+                                            {(item.results ?? []).length === 0 ? (
+                                                <p className="mt-[5px] text-[9px] text-[#999999]">
+                                                    Belum ada hasil.
+                                                </p>
+                                            ) : (
+                                                <div className="mt-[7px] grid grid-cols-1 gap-[6px] md:grid-cols-2">
+                                                    {(item.results ?? []).map((result) => (
+                                                        <div
+                                                            key={result.id}
+                                                            className="rounded-[8px] border border-[#f0f0f0] px-[9px] py-[7px]"
+                                                        >
+                                                            <div className="flex items-center justify-between gap-[8px]">
+                                                                <span className="text-[9px] text-[#999999]">
+                                                                    {result.parameter || "Parameter"}
+                                                                </span>
+                                                                <span className={`text-[8px] font-medium ${
+                                                                    result.flag === "critical"
+                                                                        ? "text-red-600"
+                                                                        : ["high", "low", "abnormal"].includes(result.flag)
+                                                                            ? "text-amber-600"
+                                                                            : "text-[#527b7b]"
+                                                                }`}>
+                                                                    {result.flag === "critical"
+                                                                        ? "Kritis"
+                                                                        : result.flag === "high"
+                                                                            ? "Tinggi"
+                                                                            : result.flag === "low"
+                                                                                ? "Rendah"
+                                                                                : result.flag === "abnormal"
+                                                                                    ? "Abnormal"
+                                                                                    : "Normal"}
+                                                                </span>
+                                                            </div>
+
+                                                            <p className="mt-[3px] text-[11px] font-semibold text-[#212121]">
+                                                                {result.value ?? "-"} {result.unit ?? ""}
+                                                            </p>
+
+                                                            <p className="mt-[2px] text-[8px] text-[#B4B4B4]">
+                                                                Rujukan: {result.reference_text ||
+                                                                    (result.reference_low !== null || result.reference_high !== null
+                                                                        ? `${result.reference_low ?? "-"} - ${result.reference_high ?? "-"}`
+                                                                        : "-")}
+                                                            </p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 )}
             </div>

@@ -507,6 +507,12 @@ foreach ($medicalUnits as $medicalUnit) {
             ],
 
             [
+                'name' => 'Kelola Stok',
+                'slug' => 'stock.manage',
+                'module' => 'pharmacy',
+            ],
+
+            [
                 'name' => 'Adjust Stok',
                 'slug' => 'stock.adjust',
                 'module' => 'inventory',
@@ -676,6 +682,8 @@ foreach ($medicalUnits as $medicalUnit) {
                 'billing.view',
                 'report.view',
                 'stock.view',
+                'stock.manage',
+                'stock.opname',
             ]
         );
 

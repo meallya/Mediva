@@ -51,4 +51,12 @@ class Doctor extends Model
             Examination::class
         );
     }
+
+    public function laboratoryOrders(): HasMany
+    {
+        return $this->hasMany(
+            LaboratoryOrder::class
+        );
+    }
+
 }
