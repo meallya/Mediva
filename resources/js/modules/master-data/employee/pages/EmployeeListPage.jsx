@@ -209,7 +209,10 @@ export default function EmployeeListPage() {
                                             key={employee.id}
                                             className="border-b border-[#f0f0f0] last:border-b-0 hover:bg-[#fcfdff]"
                                         >
-                                            <Td>{employee.employee_number ?? "-"}</Td>
+                                            <Td>
+                                                {employee.employee_number ??
+                                                    "-"}
+                                            </Td>
                                             <Td>
                                                 <p className="font-medium text-[#343434]">
                                                     {employee.name}
@@ -220,7 +223,9 @@ export default function EmployeeListPage() {
                                             <Td>
                                                 {employee.doctor ? (
                                                     <span className="text-[#047AF7]">
-                                                        {employee.doctor.specialization || "Dokter"}
+                                                        {employee.doctor
+                                                            .specialization ||
+                                                            "Dokter"}
                                                     </span>
                                                 ) : (
                                                     "-"
@@ -230,23 +235,33 @@ export default function EmployeeListPage() {
                                                 {employee.user?.username ?? "-"}
                                             </Td>
                                             <Td>
-                                                <StatusBadge active={employee.is_active} />
+                                                <StatusBadge
+                                                    active={employee.is_active}
+                                                />
                                             </Td>
                                             <Td>
                                                 <div className="flex gap-[6px]">
                                                     <button
                                                         type="button"
-                                                        onClick={() => openEdit(employee)}
+                                                        onClick={() =>
+                                                            openEdit(employee)
+                                                        }
                                                         className="flex h-[30px] w-[30px] items-center justify-center rounded-[7px] border border-[#dddddd] text-[#666666] hover:bg-[#f8f8f8]"
                                                         title="Edit pegawai"
                                                     >
-                                                        <FontAwesomeIcon icon={faPen} />
+                                                        <FontAwesomeIcon
+                                                            icon={faPen}
+                                                        />
                                                     </button>
 
                                                     <button
                                                         type="button"
                                                         disabled={saving}
-                                                        onClick={() => toggleStatus(employee)}
+                                                        onClick={() =>
+                                                            toggleStatus(
+                                                                employee,
+                                                            )
+                                                        }
                                                         className="flex h-[30px] w-[30px] items-center justify-center rounded-[7px] border border-[#C2E1F4] text-[#047AF7] hover:bg-[#f4f9ff] disabled:opacity-50"
                                                         title="Ubah status"
                                                     >
@@ -281,11 +296,7 @@ export default function EmployeeListPage() {
                     subtitle="Data identitas dasar pegawai MEDIVA"
                     onClose={() => setModalOpen(false)}
                 >
-                    <form
-                        onSubmit={save}
-                        className="p-[20px]"
-                        data-enter-scope
-                    >
+                    <form onSubmit={save} className="p-[20px]" data-enter-scope>
                         <div className="grid grid-cols-1 gap-[14px] md:grid-cols-2">
                             <Field label="Nomor Pegawai">
                                 <input
@@ -361,8 +372,9 @@ export default function EmployeeListPage() {
                         </label>
 
                         <p className="mt-[8px] text-[11px] leading-[1.5] text-[#999999]">
-                            Menonaktifkan master pegawai tidak otomatis menghapus akun,
-                            role, atau riwayat aktivitas yang sudah ada.
+                            Menonaktifkan master pegawai tidak otomatis
+                            menghapus akun, role, atau riwayat aktivitas yang
+                            sudah ada.
                         </p>
 
                         <div className="mt-[22px] flex justify-end gap-[9px]">

@@ -7,7 +7,6 @@ import {
     faPen,
     faToggleOff,
     faToggleOn,
-    faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
 import DashboardLayout from "../../../../shared/components/layout/DashboardLayout";
@@ -32,17 +31,15 @@ import {
 } from "../../shared/masterDataUtils";
 
 const roomTypeLabels = {
+    outpatient: "Rawat Jalan",
     inpatient: "Rawat Inap",
-    outpatient: "Rawat Jalan / Poli",
     emergency: "IGD",
     operating: "Ruang Operasi",
     laboratory: "Laboratorium",
     radiology: "Radiologi",
     pharmacy: "Farmasi",
-    office: "Office / Administrasi",
+    office: "Office",
     warehouse: "Gudang",
-    support: "Penunjang / Utilitas",
-    public: "Area Publik",
     other: "Lainnya",
 };
 
@@ -77,7 +74,10 @@ function ModalSelect({
         };
 
         document.addEventListener("mousedown", handleOutsideClick);
-        return () => document.removeEventListener("mousedown", handleOutsideClick);
+
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
     }, []);
 
     const selectedOption = selectOptions.find(
@@ -110,7 +110,8 @@ function ModalSelect({
             {open && (
                 <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-[80] max-h-[220px] overflow-y-auto rounded-[9px] border border-[#d8d8d8] bg-white py-[5px] shadow-[0_12px_28px_rgba(0,0,0,0.14)]">
                     {selectOptions.map((option) => {
-                        const active = String(option.value) === String(value);
+                        const active =
+                            String(option.value) === String(value);
 
                         return (
                             <button
@@ -148,7 +149,10 @@ function ModalSelect({
 export default function RoomListPage() {
     const [rows, setRows] = useState([]);
     const [meta, setMeta] = useState(normalizeMeta());
-    const [options, setOptions] = useState({ units: [], room_types: [] });
+    const [options, setOptions] = useState({
+        units: [],
+        room_types: [],
+    });
 
     const [search, setSearch] = useState("");
     const [status, setStatus] = useState("all");
@@ -160,7 +164,6 @@ export default function RoomListPage() {
 
     const [modalOpen, setModalOpen] = useState(false);
     const [editing, setEditing] = useState(null);
-    const [deleteTarget, setDeleteTarget] = useState(null);
     const [form, setForm] = useState(emptyForm);
 
     const flash = (message) => {
@@ -173,7 +176,7 @@ export default function RoomListPage() {
             const response = await roomService.getOptions();
             setOptions(response?.data ?? { units: [], room_types: [] });
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal memuat pilihan ruangan RS."));
+            setError(getErrorMessage(err, "Gagal memuat pilihan ruangan."));
         }
     };
 
@@ -193,7 +196,7 @@ export default function RoomListPage() {
             setRows(Array.isArray(response?.data) ? response.data : []);
             setMeta(normalizeMeta(response));
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal memuat data ruangan RS."));
+            setError(getErrorMessage(err, "Gagal memuat data ruangan."));
         } finally {
             setLoading(false);
         }
@@ -252,16 +255,16 @@ export default function RoomListPage() {
 
             if (editing) {
                 await roomService.update(editing.id, payload);
-                flash("Ruangan RS berhasil diperbarui.");
+                flash("Ruangan berhasil diperbarui.");
             } else {
                 await roomService.create(payload);
-                flash("Ruangan RS berhasil ditambahkan.");
+                flash("Ruangan berhasil ditambahkan.");
             }
 
             setModalOpen(false);
             await load(meta.current_page);
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal menyimpan data ruangan RS."));
+            setError(getErrorMessage(err, "Gagal menyimpan data ruangan."));
         } finally {
             setSaving(false);
         }
@@ -273,41 +276,9 @@ export default function RoomListPage() {
             setError("");
             await roomService.toggleStatus(room.id);
             await load(meta.current_page);
-            flash("Status ruangan RS berhasil diubah.");
+            flash("Status ruangan berhasil diubah.");
         } catch (err) {
-            setError(getErrorMessage(err, "Gagal mengubah status ruangan RS."));
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    const requestDelete = (room) => {
-        if (room.inpatient_room) {
-            setError(
-                "Ruangan RS ini sudah terhubung ke Kamar Rawat Inap. Hapus profil Kamar Rawat Inap terlebih dahulu.",
-            );
-            return;
-        }
-
-        setError("");
-        setDeleteTarget(room);
-    };
-
-    const removeRoom = async () => {
-        if (!deleteTarget) return;
-
-        try {
-            setSaving(true);
-            setError("");
-            await roomService.destroy(deleteTarget.id);
-            setDeleteTarget(null);
-            await Promise.all([
-                load(meta.current_page),
-                loadOptions(),
-            ]);
-            flash("Ruangan RS berhasil dihapus.");
-        } catch (err) {
-            setError(getErrorMessage(err, "Gagal menghapus ruangan RS."));
+            setError(getErrorMessage(err, "Gagal mengubah status ruangan."));
         } finally {
             setSaving(false);
         }
@@ -317,9 +288,9 @@ export default function RoomListPage() {
         <DashboardLayout>
             <div className="min-h-[calc(100vh-88px)] bg-[#fafbfc] p-[30px]">
                 <MasterDataHeader
-                    title="Master Ruangan RS"
-                    subtitle="Seluruh ruangan fisik rumah sakit. Ruangan bertipe Rawat Inap dapat dikonfigurasi lebih lanjut pada menu Kamar Rawat Inap."
-                    buttonLabel="Tambah Ruangan RS"
+                    title="Master Ruangan"
+                    subtitle="Master ruangan lintas klinis, operasional, dan office untuk kebutuhan MEDIVA berikutnya."
+                    buttonLabel="Tambah Ruangan"
                     onCreate={openCreate}
                     icon={faDoorOpen}
                 />
@@ -339,7 +310,7 @@ export default function RoomListPage() {
                             onChange={(event) => setRoomType(event.target.value)}
                             className={inputClass}
                         >
-                            <option value="all">Semua Jenis Ruangan</option>
+                            <option value="all">Semua Jenis Ruang</option>
                             {(options.room_types ?? []).map((type) => (
                                 <option key={type} value={type}>
                                     {roomTypeLabels[type] ?? type}
@@ -361,7 +332,7 @@ export default function RoomListPage() {
 
                 <div className="mt-[16px] overflow-hidden rounded-[14px] border border-[#ececec] bg-white">
                     <div className="overflow-x-auto">
-                        <table className="w-full min-w-[1040px]">
+                        <table className="w-full min-w-[980px]">
                             <thead className="bg-[#fafbfc]">
                                 <tr className="border-b border-[#eeeeee]">
                                     <Th>Kode</Th>
@@ -369,8 +340,7 @@ export default function RoomListPage() {
                                     <Th>Unit</Th>
                                     <Th>Jenis</Th>
                                     <Th>Lantai</Th>
-                                    <Th>Kapasitas Ruang</Th>
-                                    <Th>Rawat Inap</Th>
+                                    <Th>Kapasitas</Th>
                                     <Th>Status</Th>
                                     <Th>Aksi</Th>
                                 </tr>
@@ -380,8 +350,8 @@ export default function RoomListPage() {
                                 {loading || rows.length === 0 ? (
                                     <TableEmpty
                                         loading={loading}
-                                        colSpan={9}
-                                        emptyText="Belum ada data ruangan RS."
+                                        colSpan={8}
+                                        emptyText="Belum ada data ruangan."
                                     />
                                 ) : (
                                     rows.map((room) => (
@@ -395,19 +365,13 @@ export default function RoomListPage() {
                                                     {room.name}
                                                 </p>
                                             </Td>
-                                            <Td>{room.unit?.name ?? "Belum ditentukan"}</Td>
-                                            <Td>{roomTypeLabels[room.room_type] ?? room.room_type ?? "-"}</Td>
+                                            <Td>{room.unit?.name ?? "Umum"}</Td>
+                                            <Td>
+                                                {roomTypeLabels[room.room_type]
+                                                    ?? room.room_type}
+                                            </Td>
                                             <Td>{room.floor ?? "-"}</Td>
                                             <Td>{room.capacity ?? 1}</Td>
-                                            <Td>
-                                                {room.inpatient_room ? (
-                                                    <span className="inline-flex rounded-full border border-[#C2E1F4] bg-[#f4f9ff] px-[8px] py-[4px] text-[11px] font-medium text-[#047AF7]">
-                                                        Terhubung
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-[12px] text-[#999999]">-</span>
-                                                )}
-                                            </Td>
                                             <Td>
                                                 <StatusBadge active={room.is_active} />
                                             </Td>
@@ -417,7 +381,7 @@ export default function RoomListPage() {
                                                         type="button"
                                                         onClick={() => openEdit(room)}
                                                         className="flex h-[30px] w-[30px] items-center justify-center rounded-[7px] border border-[#dddddd] text-[#666666] hover:bg-[#f8f8f8]"
-                                                        title="Edit ruangan RS"
+                                                        title="Edit ruangan"
                                                     >
                                                         <FontAwesomeIcon icon={faPen} />
                                                     </button>
@@ -430,22 +394,12 @@ export default function RoomListPage() {
                                                         title="Ubah status"
                                                     >
                                                         <FontAwesomeIcon
-                                                            icon={room.is_active ? faToggleOn : faToggleOff}
+                                                            icon={
+                                                                room.is_active
+                                                                    ? faToggleOn
+                                                                    : faToggleOff
+                                                            }
                                                         />
-                                                    </button>
-
-                                                    <button
-                                                        type="button"
-                                                        disabled={saving}
-                                                        onClick={() => requestDelete(room)}
-                                                        className="flex h-[30px] w-[30px] items-center justify-center rounded-[7px] border border-[#f3c7c7] text-[#d9534f] hover:bg-[#fff7f7] disabled:opacity-50"
-                                                        title={
-                                                            room.inpatient_room
-                                                                ? "Hapus Kamar Rawat Inap terlebih dahulu"
-                                                                : "Hapus ruangan RS"
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon icon={faTrash} />
                                                     </button>
                                                 </div>
                                             </Td>
@@ -466,11 +420,15 @@ export default function RoomListPage() {
 
             {modalOpen && (
                 <Modal
-                    title={editing ? "Edit Ruangan RS" : "Tambah Ruangan RS"}
-                    subtitle="Data lokasi fisik ruangan di rumah sakit."
+                    title={editing ? "Edit Ruangan" : "Tambah Ruangan"}
+                    subtitle="Master ruangan MEDIVA"
                     onClose={() => setModalOpen(false)}
                 >
-                    <form onSubmit={save} className="p-[20px]" data-enter-scope>
+                    <form
+                        onSubmit={save}
+                        className="p-[20px]"
+                        data-enter-scope
+                    >
                         <div className="grid grid-cols-1 gap-[14px] md:grid-cols-2">
                             <Field label="Kode Ruangan" required>
                                 <input
@@ -483,7 +441,7 @@ export default function RoomListPage() {
                                         }))
                                     }
                                     className={inputClass}
-                                    placeholder="RI-MAWAR-01"
+                                    placeholder="RANAP-201"
                                 />
                             </Field>
 
@@ -498,7 +456,7 @@ export default function RoomListPage() {
                                         }))
                                     }
                                     className={inputClass}
-                                    placeholder="Ruang Mawar"
+                                    placeholder="Ruang Rawat 201"
                                 />
                             </Field>
 
@@ -512,7 +470,10 @@ export default function RoomListPage() {
                                         }))
                                     }
                                     options={[
-                                        { value: "", label: "Belum ditentukan" },
+                                        {
+                                            value: "",
+                                            label: "Umum / Belum ditentukan",
+                                        },
                                         ...(options.units ?? []).map((unit) => ({
                                             value: String(unit.id),
                                             label: `${unit.name} — ${unit.code}`,
@@ -522,11 +483,7 @@ export default function RoomListPage() {
                                 />
                             </Field>
 
-                            <Field
-                                label="Jenis Ruangan"
-                                required
-                                helper="Pilih Rawat Inap jika ruangan ini nantinya memiliki profil kamar/bed."
-                            >
+                            <Field label="Jenis Ruangan" required>
                                 <ModalSelect
                                     value={form.room_type}
                                     onChange={(nextValue) =>
@@ -535,9 +492,10 @@ export default function RoomListPage() {
                                             room_type: String(nextValue),
                                         }))
                                     }
-                                    options={(options.room_types?.length
-                                        ? options.room_types
-                                        : Object.keys(roomTypeLabels)
+                                    options={(
+                                        options.room_types?.length
+                                            ? options.room_types
+                                            : Object.keys(roomTypeLabels)
                                     ).map((type) => ({
                                         value: type,
                                         label: roomTypeLabels[type] ?? type,
@@ -560,11 +518,7 @@ export default function RoomListPage() {
                                 />
                             </Field>
 
-                            <Field
-                                label="Kapasitas Ruang"
-                                required
-                                helper="Kapasitas umum ruangan, bukan jumlah bed. Kapasitas bed diatur pada Kamar Rawat Inap."
-                            >
+                            <Field label="Kapasitas" required>
                                 <input
                                     required
                                     type="number"
@@ -632,45 +586,6 @@ export default function RoomListPage() {
                     </form>
                 </Modal>
             )}
-
-            {deleteTarget && (
-                <Modal
-                    title="Hapus Ruangan RS"
-                    subtitle="Tindakan ini hanya diperbolehkan untuk ruangan yang belum digunakan oleh data lain."
-                    onClose={() => !saving && setDeleteTarget(null)}
-                >
-                    <div className="p-[20px]">
-                        <p className="text-[13px] leading-[1.7] text-[#555555]">
-                            Hapus <span className="font-semibold text-[#333333]">{deleteTarget.name}</span> ({deleteTarget.code})?
-                        </p>
-
-                        <p className="mt-[8px] text-[12px] leading-[1.6] text-[#999999]">
-                            Jika ruangan sudah dipakai oleh modul lain, MEDIVA akan menolak penghapusan dan menyarankan menonaktifkan data.
-                        </p>
-
-                        <div className="mt-[22px] flex justify-end gap-[9px]">
-                            <button
-                                type="button"
-                                disabled={saving}
-                                onClick={() => setDeleteTarget(null)}
-                                className="h-[40px] rounded-[9px] border border-[#dddddd] px-[15px] text-[13px] text-[#555555] disabled:opacity-50"
-                            >
-                                Batal
-                            </button>
-
-                            <button
-                                type="button"
-                                disabled={saving}
-                                onClick={removeRoom}
-                                className="h-[40px] rounded-[9px] bg-[#d9534f] px-[16px] text-[13px] font-medium text-white disabled:opacity-50"
-                            >
-                                {saving ? "Menghapus..." : "Hapus Ruangan"}
-                            </button>
-                        </div>
-                    </div>
-                </Modal>
-            )}
-
         </DashboardLayout>
     );
 }

@@ -22,6 +22,14 @@ import {
     faCartShopping,
     faFlask,
     faBedPulse,
+    faChartPie,
+    faIdCard,
+    faCalendarDays,
+    faUserCheck,
+    faCalendarXmark,
+    faBusinessTime,
+    faArrowTrendUp,
+    faChalkboardUser,
 } from "@fortawesome/free-solid-svg-icons";
 
 /*
@@ -243,6 +251,78 @@ const navigation = [
                 path: "/reports",
                 icon: faChartColumn,
                 permissions: ["report.view"],
+                available: true,
+            },
+        ],
+    },
+
+    /*
+    |--------------------------------------------------------------------------
+    | HR/SDM
+    |--------------------------------------------------------------------------
+    */
+
+    {
+        type: "group",
+        label: "HR / SDM",
+        icon: faUsers,
+        permissions: ["hr.dashboard.view", "hr.employee.view"],
+        available: true,
+        children: [
+            // {
+            //     label: "Dashboard HR",
+            //     path: "/corporate/hr",
+            //     icon: faChartPie,
+            //     permissions: ["hr.dashboard.view"],
+            //     available: true,
+            // },
+            {
+                label: "Pegawai",
+                path: "/master/employees",
+                icon: faIdCard,
+                permissions: ["hr.employee.view"],
+                available: true,
+            },
+            {
+                label: "Jadwal & Shift",
+                path: "/corporate/hr/schedules",
+                icon: faCalendarDays,
+                permissions: ["hr.schedule.view"],
+                available: true,
+            },
+            {
+                label: "Kehadiran",
+                path: "/corporate/hr/attendance",
+                icon: faUserCheck,
+                permissions: ["hr.attendance.view"],
+                available: true,
+            },
+            {
+                label: "Cuti & Izin",
+                path: "/corporate/hr/absence",
+                icon: faCalendarXmark,
+                permissions: ["hr.employee.view"],
+                available: true,
+            },
+            {
+                label: "Lembur",
+                path: "/corporate/hr/overtime",
+                icon: faBusinessTime,
+                permissions: ["hr.employee.view"],
+                available: true,
+            },
+            {
+                label: "Kinerja",
+                path: "/corporate/hr/performance",
+                icon: faArrowTrendUp,
+                permissions: ["hr.employee.view"],
+                available: true,
+            },
+            {
+                label: "Pelatihan",
+                path: "/corporate/hr/training",
+                icon: faChalkboardUser,
+                permissions: ["hr.employee.view"],
                 available: true,
             },
         ],

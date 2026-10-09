@@ -13,7 +13,7 @@
         content="{{ csrf_token() }}"
     >
 
-    <link rel="icon" type="image/png" href="/images/icon.png">
+    <link rel="icon" type="image/png" href="/images/logo.png">
 
     <title>Mediva</title>
 

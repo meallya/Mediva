@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\AssetController;
 use App\Http\Controllers\Api\ProcurementController;
 use App\Http\Controllers\Api\OperatingRoomController;
 use App\Http\Controllers\Api\OperatingRoomMasterController;
+use App\Http\Controllers\Api\HrController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -322,45 +323,78 @@ Route::middleware(
         |--------------------------------------------------------------------------
         */
 
+        // Route::get(
+        //     '/master/employees',
+        //     [
+        //         EmployeeController::class,
+        //         'index',
+        //     ]
+        // );
+
+        // Route::post(
+        //     '/master/employees',
+        //     [
+        //         EmployeeController::class,
+        //         'store',
+        //     ]
+        // );
+
+        // Route::get(
+        //     '/master/employees/{employee}',
+        //     [
+        //         EmployeeController::class,
+        //         'show',
+        //     ]
+        // );
+
+        // Route::put(
+        //     '/master/employees/{employee}',
+        //     [
+        //         EmployeeController::class,
+        //         'update',
+        //     ]
+        // );
+
+        // Route::patch(
+        //     '/master/employees/{employee}/status',
+        //     [
+        //         EmployeeController::class,
+        //         'toggleStatus',
+        //     ]
+        // );
+
+            Route::middleware(
+        'permission:user.manage,hr.employee.view'
+    )->group(function () {
         Route::get(
             '/master/employees',
-            [
-                EmployeeController::class,
-                'index',
-            ]
-        );
-
-        Route::post(
-            '/master/employees',
-            [
-                EmployeeController::class,
-                'store',
-            ]
+            [EmployeeController::class, 'index']
         );
 
         Route::get(
             '/master/employees/{employee}',
-            [
-                EmployeeController::class,
-                'show',
-            ]
+            [EmployeeController::class, 'show']
+        );
+    });
+
+    Route::middleware(
+        'permission:user.manage,hr.employee.manage'
+    )->group(function () {
+        Route::post(
+            '/master/employees',
+            [EmployeeController::class, 'store']
         );
 
         Route::put(
             '/master/employees/{employee}',
-            [
-                EmployeeController::class,
-                'update',
-            ]
+            [EmployeeController::class, 'update']
         );
 
         Route::patch(
             '/master/employees/{employee}/status',
-            [
-                EmployeeController::class,
-                'toggleStatus',
-            ]
+            [EmployeeController::class, 'toggleStatus']
         );
+    });
 
         /*
         |--------------------------------------------------------------------------
@@ -648,7 +682,38 @@ Route::middleware(
     }); // ================================================================
         // END permission:user.manage
         // ================================================================
+ Route::middleware(
+        'permission:user.manage,hr.employee.view'
+    )->group(function () {
+        Route::get(
+            '/master/employees',
+            [EmployeeController::class, 'index']
+        );
 
+        Route::get(
+            '/master/employees/{employee}',
+            [EmployeeController::class, 'show']
+        );
+    });
+
+    Route::middleware(
+        'permission:user.manage,hr.employee.manage'
+    )->group(function () {
+        Route::post(
+            '/master/employees',
+            [EmployeeController::class, 'store']
+        );
+
+        Route::put(
+            '/master/employees/{employee}',
+            [EmployeeController::class, 'update']
+        );
+
+        Route::patch(
+            '/master/employees/{employee}/status',
+            [EmployeeController::class, 'toggleStatus']
+        );
+    });
 
     /*
     |--------------------------------------------------------------------------
@@ -1879,6 +1944,39 @@ Route::get(
         'permission:operating_room.recovery'
     );
 
+});
+
+/*
+    |--------------------------------------------------------------------------
+    | HR/SDM
+    |--------------------------------------------------------------------------
+    */
+
+Route::prefix('hr')->group(function () {
+    Route::get('/dashboard', [HrController::class, 'dashboard'])->middleware('permission:hr.dashboard.view');
+    // Route::get('/employees', [HrController::class, 'employees'])->middleware('permission:hr.employee.view');
+    // Route::post('/employees', [HrController::class, 'storeEmployee'])->middleware('permission:hr.employee.manage');
+    // Route::get('/employees/{employee}', [HrController::class, 'employee'])->middleware('permission:hr.employee.view');
+    Route::get('/schedules', [HrController::class, 'schedules'])->middleware('permission:hr.schedule.view');
+    Route::post('/schedules', [HrController::class, 'storeSchedule'])->middleware('permission:hr.schedule.manage');
+    Route::put('/schedules/{schedule}', [HrController::class, 'updateSchedule'])->middleware('permission:hr.schedule.manage');
+    Route::delete('/schedules/{schedule}', [HrController::class, 'deleteSchedule'])->middleware('permission:hr.schedule.manage');
+    Route::get('/attendances', [HrController::class, 'attendances'])->middleware('permission:hr.attendance.view');
+    Route::post('/attendances', [HrController::class, 'createAttendance'])->middleware('permission:hr.attendance.manage');
+    Route::put('/attendances/{attendance}', [HrController::class, 'updateAttendance'])->middleware('permission:hr.attendance.manage');
+    Route::delete('/attendances/{attendance}', [HrController::class, 'deleteAttendance'])->middleware('permission:hr.attendance.manage');
+ // TODO: HRIS Integration - Uncomment nanti
+// Route::post('/attendances/sync-from-hris', [HrController::class, 'syncAttendancesFromHris'])->middleware('permission:hr.attendance.manage');
+    Route::get('/absences', [HrController::class, 'absences'])->middleware('permission:hr.employee.view');
+    Route::post('/absences', [HrController::class, 'createAbsence'])->middleware('permission:hr.employee.view');
+    Route::put('/absences/{absence}', [HrController::class, 'updateAbsence'])->middleware('permission:hr.employee.view');
+    Route::delete('/absences/{absence}', [HrController::class, 'deleteAbsence'])->middleware('permission:hr.employee.view');
+    Route::post('/absences/{absence}/approve', [HrController::class, 'approveAbsence'])->middleware('permission:hr.employee.manage');
+    Route::post('/absences/{absence}/reject', [HrController::class, 'rejectAbsence'])->middleware('permission:hr.employee.manage');
+    Route::get('/overtimes', [HrController::class, 'overtimes'])->middleware('permission:hr.employee.view');
+    Route::get('/performances', [HrController::class, 'performances'])->middleware('permission:hr.employee.view');
+    Route::get('/trainings', [HrController::class, 'trainings'])->middleware('permission:hr.employee.view');
+    Route::post('/employees/{employee}/offboard', [HrController::class, 'offboard'])->middleware('permission:hr.offboarding.manage');
 });
 
 });

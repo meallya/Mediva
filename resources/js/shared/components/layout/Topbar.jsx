@@ -643,7 +643,7 @@ export default function Topbar() {
                                                     {activeRole.name}
                                                 </p>
 
-                                                <p
+                                                {/* <p
                                                     className="
                                                         mt-[2px]
                                                         truncate
@@ -653,7 +653,7 @@ export default function Topbar() {
                                                 >
                                                     {activeRole?.unit?.name ||
                                                         "Tidak ada unit"}
-                                                </p>
+                                                </p> */}
                                             </div>
                                         </div>
                                     </div>

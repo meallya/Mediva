@@ -146,6 +146,23 @@ import SurgeryDetailPage from "../modules/clinical-medical/operating-room/pages/
 
 /*
 |--------------------------------------------------------------------------
+| HR/SDM
+|--------------------------------------------------------------------------
+*/
+
+import HrDashboardPage from "../modules/corporate-office/hr-sdm/pages/HrDashboardPage";
+// import HrEmployeesPage from "../modules/corporate-office/hr-sdm/pages/HrEmployeesPage";
+// import HrEmployeeDetailPage from "../modules/corporate-office/hr-sdm/pages/HrEmployeeDetailPage";
+// import HrEmployeeCreatePage from "../modules/corporate-office/hr-sdm/pages/HrEmployeeCreatePage";
+import HrSchedulesPage from "../modules/corporate-office/hr-sdm/pages/HrSchedulesPage";
+import HrAttendancePage from "../modules/corporate-office/hr-sdm/pages/HrAttendancePage";
+import HrAbsencePage from "../modules/corporate-office/hr-sdm/pages/HrAbsencePage";
+import HrOvertimePage from "../modules/corporate-office/hr-sdm/pages/HrOvertimePage";
+import HrPerformancePage from "../modules/corporate-office/hr-sdm/pages/HrPerformancePage";
+import HrTrainingPage from "../modules/corporate-office/hr-sdm/pages/HrTrainingPage";
+
+/*
+|--------------------------------------------------------------------------
 | PROTECTED ROUTE
 |--------------------------------------------------------------------------
 */
@@ -400,6 +417,46 @@ export default function AppRouter() {
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
+            {/*
+            |--------------------------------------------------------------------------
+            | HR/SDM
+            |--------------------------------------------------------------------------
+            */}
+
+            <Route path="/corporate/hr" element={<HrDashboardPage />} />
+            {/* <Route
+                path="/corporate/hr/employees"
+                element={<HrEmployeesPage />}
+            />
+            <Route
+                path="/corporate/hr/employees/new"
+                element={<HrEmployeeCreatePage />}
+            />
+
+            <Route
+                path="/corporate/hr/employees/:id"
+                element={<HrEmployeeDetailPage />}
+            />
+            <Route
+                path="/corporate/hr/employees/:id"
+                element={<HrEmployeeDetailPage />}
+            /> */}
+            <Route
+                path="/corporate/hr/schedules"
+                element={<HrSchedulesPage />}
+            />
+            <Route
+                path="/corporate/hr/attendance"
+                element={<HrAttendancePage />}
+            />
+            <Route path="/corporate/hr/absence" element={<HrAbsencePage />} />
+            <Route path="/corporate/hr/overtime" element={<HrOvertimePage />} />
+            <Route
+                path="/corporate/hr/performance"
+                element={<HrPerformancePage />}
+            />
+            <Route path="/corporate/hr/training" element={<HrTrainingPage />} />
         </Routes>
     );
 }

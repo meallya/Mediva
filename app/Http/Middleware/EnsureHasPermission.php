@@ -12,14 +12,8 @@ class EnsureHasPermission
     public function handle(
         Request $request,
         Closure $next,
-        string $permission
+        string ...$permissions   // <-- terima banyak slug
     ): Response {
-        /*
-        |--------------------------------------------------------------------------
-        | USER
-        |--------------------------------------------------------------------------
-        */
-
         $user = $request->user();
 
         if (!$user) {
@@ -27,12 +21,6 @@ class EnsureHasPermission
                 'message' => 'Anda belum login.',
             ], 401);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | ACTIVE ASSIGNMENT
-        |--------------------------------------------------------------------------
-        */
 
         $assignmentId = $request
             ->session()
@@ -43,12 +31,6 @@ class EnsureHasPermission
                 'message' => 'Role aktif tidak ditemukan.',
             ], 403);
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | ROLE + PERMISSIONS
-        |--------------------------------------------------------------------------
-        */
 
         $assignment = RoleAssignment::with([
             'role.permissions',
@@ -66,22 +48,21 @@ class EnsureHasPermission
 
         /*
         |--------------------------------------------------------------------------
-        | CHECK PERMISSION
+        | CHECK PERMISSION (OR)
         |--------------------------------------------------------------------------
         |
-        | Tidak ada bypass khusus IT.
-        |
-        | Semua role mengikuti permission masing-masing.
+        | Lolos kalau role punya SALAH SATU dari slug yang diminta.
         |
         */
 
-        $hasPermission = $assignment
+        $roleSlugs = $assignment
             ->role
             ->permissions
-            ->contains(
-                'slug',
-                $permission
-            );
+            ->pluck('slug');
+
+        $hasPermission = $roleSlugs
+            ->intersect($permissions)
+            ->isNotEmpty();
 
         if (!$hasPermission) {
             return response()->json([

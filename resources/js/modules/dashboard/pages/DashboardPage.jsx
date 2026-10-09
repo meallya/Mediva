@@ -28,6 +28,8 @@ import FinanceDashboard from "../roles/FinanceDashboard";
 
 import ManagementDashboard from "../roles/ManagementDashboard";
 
+import HrDashboardPage from "../../corporate-office/hr-sdm/pages/HrDashboardPage";
+
 /*
 |--------------------------------------------------------------------------
 | HELPERS
@@ -71,6 +73,10 @@ export default function DashboardPage() {
 
     if (role === "management") {
         return <ManagementDashboard />;
+    }
+
+    if (role === "hr") {
+        return <HrDashboardPage />;
     }
 
     return <OperationalDashboard />;
